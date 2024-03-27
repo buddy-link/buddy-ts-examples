@@ -8,7 +8,11 @@ export default {
     extend: {
       container: {
         center: true
-      }
+      },
+      colors: {
+        primary: '#F5D473',
+        "primary-dark": "#413E33",
+      },
     },
   },
   plugins: [],

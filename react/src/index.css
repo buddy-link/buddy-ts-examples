@@ -1,7 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html, body {
-  background: #F8FCFA;
+  background: #0D0D0B;
+  color: #F6F7F7;
+  font-family: "Kode Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+}
+
+.loader {
+  width: 84px;
+  height: 84px;
+  border: 3px solid #F6F7F7;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  animation: rotation 1s linear infinite;
+}
+
+.loader:after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50% , -50%);
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  border: 3px solid ;
+  border-color: #F5D473 transparent;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
 }
