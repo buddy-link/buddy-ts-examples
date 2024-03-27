@@ -22,18 +22,21 @@ const Organization = () => {
       {
         key: "PDA",
         value: organization?.account?.pda.toBase58(),
+        link: `https://solscan.io/account/${organization?.account?.pda.toBase58()}`
       },
       {
         key: "Ambassador",
-        value: organization?.account?.ambassador.toBase58(),
-      },
+        value: organization?.account?.ambassador.toBase58() == '11111111111111111111111111111111' ? 'none' : organization?.account?.ambassador.toBase58(),
+      }, 
       {
         key: "Authority",
         value: organization?.account?.authority.toBase58(),
+        link: `https://solscan.io/token/${organization?.account?.authority.toBase58()}`
       },
       {
         key: "Main Token Mint",
         value: organization?.account?.mainTokenMint.toBase58(),
+        link: `https://solscan.io/token/${organization?.account?.mainTokenMint.toBase58()}`
       },
       {
         key: "Padding",

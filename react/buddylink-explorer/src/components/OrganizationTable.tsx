@@ -1,5 +1,5 @@
 interface Props {
-  data: { key: string; value: string }[];
+  data: { key: string; value: string; link?: string; }[];
 }
 const OrganizationTable = ({ data }: Props) => (
   <table className="w-full">
@@ -19,7 +19,11 @@ const OrganizationTable = ({ data }: Props) => (
                 index % 2 ? "bg-primary-dark" : ""
               }`}
             >
-              {item.value}
+              {item.link ? (
+                <a href={item.link} target="_blank">{item.value}</a>
+              ) : (
+                item.value
+              )}
             </td>
           </tr>
         );
