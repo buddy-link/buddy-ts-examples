@@ -62,8 +62,9 @@ const Organization = () => {
 
     return slice(members, 0, 10).map((item) => {
       return {
-        profile: item.account?.name,
-        member: "–",
+        //@ts-expect-error types still WIP
+        profile: item?.account?.name || '',
+        member: "-",
         treasuryCount: 1,
       };
     });
