@@ -66,7 +66,6 @@ const Organization = () => {
 
     return slice(members, 0, 10).map((item) => {
       return {
-        //@ts-expect-error types still WIP
         profile: "-",
         //@ts-expect-error types still WIP
         member: item?.account?.name || '',
