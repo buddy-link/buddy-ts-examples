@@ -46,10 +46,11 @@ const Organization = () => {
         key: "Members",
         value: members?.length,
       },
-      {
-        key: "Required volume for rewards",
-        value: organization?.account?.volumeRequiredForRewards.toString(),
-      },
+      //TODO: Test and validate volumeRequiredForRewards
+      // {
+      //   key: "Required volume for rewards",
+      //   value: organization?.account?.volumeRequiredForRewards.toString(),
+      // },
       {
         key: "Date created",
         value: moment(
@@ -66,8 +67,9 @@ const Organization = () => {
     return slice(members, 0, 10).map((item) => {
       return {
         //@ts-expect-error types still WIP
-        profile: item?.account?.name || '',
-        member: "-",
+        profile: "-",
+        //@ts-expect-error types still WIP
+        member: item?.account?.name || '',
         treasuryCount: 1,
       };
     });
