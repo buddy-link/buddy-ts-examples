@@ -1,5 +1,11 @@
+export type OrganizationTableRow = {
+  key: string;
+  value: string;
+  link?: string;
+};
+
 interface Props {
-  data: { key: string; value: string; link?: string; }[];
+  data: OrganizationTableRow[];
 }
 const OrganizationTable = ({ data }: Props) => (
   <table className="w-full">
@@ -20,7 +26,9 @@ const OrganizationTable = ({ data }: Props) => (
               }`}
             >
               {item.link ? (
-                <a href={item.link} target="_blank">{item.value}</a>
+                <a href={item.link} target="_blank">
+                  {item.value}
+                </a>
               ) : (
                 item.value
               )}
