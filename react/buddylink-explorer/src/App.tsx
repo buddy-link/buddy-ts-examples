@@ -10,7 +10,10 @@ const App = () => {
   const { connection } = useConnection();
   const [organizationName] = useBuddyState("ORGANIZATION_NAME");
 
-  useInitBuddyLink(connection, wallet, organizationName, {
+  // THIS MUST BE FIXED IN SDK
+  // returning xyz if organizationName is empty string
+  // since passing empty string doesn't reset organization
+  useInitBuddyLink(connection, wallet, organizationName || "xyz", {
     debug: false,
   });
 
