@@ -12,10 +12,8 @@ const useSearch = () => {
 		_.debounce((cb: () => void) => cb(), 1000)
 	).current;
 
-	const handleOrganizationNameChange = (
-		e: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setOrganizationValue(e.target.value);
+	const handleOrganizationNameChange = (organizationName: string) => {
+		setOrganizationValue(organizationName);
 	};
 
 	const handleMemberNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

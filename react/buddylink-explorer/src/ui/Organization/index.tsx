@@ -1,22 +1,43 @@
 import EmptyState from "../../components/EmptyState";
 import OrganizationTable from "../../components/OrganizationTable";
 import Search from "../../components/Search";
-import { useBuddyState } from "buddy.link";
+import {
+	useBuddyState,
+	getMemberAccounts,
+	getTreasuryAccounts,
+	getOrganizationAccounts,
+	getProfileAccounts,
+} from "buddy.link";
 import MembersTable from "../../components/MembersTable";
 import useSearch from "./useSearch";
 import useData from "./useData";
+import { useEffect, useState } from "react";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import useChips from "./useChips";
+
+export enum RadioSelectorType {
+	Organization = "organizations",
+	Member = "members",
+}
 
 const Organization = () => {
 	const [organization] = useBuddyState("BUDDY_ORGANIZATION");
 	const [members] = useBuddyState("BUDDY_MEMBERS");
-	const [profiles] = useBuddyState("BUDDY_PROFILES");
+	// const [profiles] = useBuddyState("BUDDY_PROFILE");
 	const [loading] = useBuddyState("BUDDY_LOADING");
 	const [organizationName] = useBuddyState("ORGANIZATION_NAME");
+	const { connection } = useConnection();
+
+	const [radioStatus, setRadioStatus] = useState(
+		RadioSelectorType.Organization
+	);
+
 	// const [wallet] = useBuddyState("BUDDY_WALLET");
 
-	console.log("Org: ", organization, organizationName);
-	console.log("Members: ", members);
-	console.log("Profiles: ", profiles);
+	// console.log("Org: ", organization, organizationName);
+	// console.log("Members: ", members);
+	// console.log("Profiles: ", profiles);
 
 	const {
 		organizationValue,
@@ -34,7 +55,47 @@ const Organization = () => {
 		memberName,
 	});
 
-	console.log("members Data: ", membersData);
+	// useEffect(() => {
+	// 	const fetchOrg = async () => {
+	// 		const orgs = await getOrganizationAccounts(connection);
+
+	// 		console.log("orgs: ", orgs);
+
+	// 		for (const org in orgs) {
+
+	// 			console.log("org: ", orgs[org].account.data.toString("hex"));
+
+	// 			const parsed = await connection.getParsedAccountInfo(
+	// 				org.pubkey
+	// 			);
+	// 			console.log("parsed: ", parsed);
+	// 		}
+
+	// 		// const orgs = await getOrganizationAccounts(connection);
+	// 		console.log(
+	// 			"orgs: ",
+	// 			orgs.map((org) => {
+	// 				console.log("org: ", org.account.data.toString("hex"));
+
+	// 				const byteArray = new Uint8Array(org.account.data);
+	// 				const decoder = new TextDecoder();
+	// 				const decodedData = decoder.decode(byteArray);
+
+	// 				return decodedData;
+	// 			})
+	// 		);
+
+	// 		const profiles = await getProfileAccounts(connection);
+	// 		console.log(
+	// 			"profiles: ",
+	// 			profiles.map((profile) => profile.account)
+	// 		);
+	// 	};
+
+	// 	fetchOrg();
+	// }, [connection]);
+
+	// console.log("members Data: ", membersData);
 
 	return (
 		<div className="flex flex-col items-center gap-4">
@@ -43,7 +104,15 @@ const Organization = () => {
 					title="Search for organization"
 					inputPlaceholder="Org name (i.e. laddercaster, staratlas, elementerra)"
 					inputValue={organizationValue}
-					onInputChange={handleOrganizationNameChange}
+					onInputChange={(event) =>
+						handleOrganizationNameChange(event.target.value)
+					}
+					radioValue={radioStatus}
+					changeRadioStatus={(value: RadioSelectorType) =>
+						setRadioStatus(value)
+					}
+					chips={["staratlas", "laddercaster", "elementerra"]}
+					onChipClick={handleOrganizationNameChange}
 				/>
 				{members && members.length > 0 && (
 					<Search
