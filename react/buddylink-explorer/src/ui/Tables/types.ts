@@ -1,6 +1,8 @@
 export enum RadioSelectorType {
-	Organization = "organizations",
-	Member = "members",
+	Organization = "Organization",
+	Member = "Member",
+	Wallet = "Wallet",
+	Profile = "Profile",
 }
 
 export type serializedMemberType = {

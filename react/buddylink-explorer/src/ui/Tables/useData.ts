@@ -2,9 +2,10 @@ import { useBuddyState } from "buddy.link";
 import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
 import { MemberTableRow } from "../../components/MembersTable";
-import { OrganizationTableRow } from "../../components/OrganizationTable";
+
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
 import { serializedMemberType } from "./types";
+import { OrganizationTableRow } from "../../components/types";
 
 interface Props {
 	memberName: string;

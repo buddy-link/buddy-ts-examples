@@ -1,4 +1,4 @@
-import { RadioSelectorType } from "../ui/Organization";
+import { RadioSelectorType } from "../ui/Tables/types";
 
 interface Props {
 	title: string;
@@ -21,34 +21,24 @@ const Search = ({
 	onChipClick,
 }: Props) => (
 	<div className="w-full bg-[#282828] p-4 rounded-md flex flex-col gap-4">
-		<div className="flex gap-3">
-			<h2 className="font-bold">{title}</h2>
+		<div className="flex gap-3 items-center justify-start">
+			<h2 className="font-bold min-w-[260px] text-lg">{title}</h2>
 			{radioValue ? (
 				<div>
-					<button
-						className={` font-bold px-2 rounded-l-lg uppercase border border-primary  ${
-							radioValue === RadioSelectorType.Organization
-								? "bg-primary text-black"
-								: "bg-primary-dark"
-						}`}
-						onClick={() =>
-							changeRadioStatus?.(RadioSelectorType.Organization)
-						}
-					>
-						Organizations
-					</button>
-					<button
-						className={`  font-bold px-2 rounded-r-lg uppercase border border-primary  ${
-							radioValue === RadioSelectorType.Member
-								? "bg-primary text-black"
-								: "bg-primary-dark"
-						}`}
-						onClick={() =>
-							changeRadioStatus?.(RadioSelectorType.Member)
-						}
-					>
-						Members
-					</button>
+					{Object.values(RadioSelectorType).map((value) => (
+						<button
+							className={` font-bold px-3 first:rounded-l-lg last:rounded-r-lg uppercase border border-primary text-sm  ${
+								radioValue === RadioSelectorType[value]
+									? "bg-primary text-black"
+									: "bg-primary-dark"
+							}`}
+							onClick={() =>
+								changeRadioStatus?.(RadioSelectorType[value])
+							}
+						>
+							{value}
+						</button>
+					))}
 				</div>
 			) : null}
 		</div>
@@ -62,7 +52,7 @@ const Search = ({
 			{chips.length > 0 &&
 				chips.map((_, index) => (
 					<button
-						className="bg-primary text-black font-bold px-2 rounded-lg uppercase w-full hover:opacity-70"
+						className="bg-primary text-black font-bold px-2 rounded-lg uppercase hover:opacity-70 w-fit text-sm"
 						onClick={() => onChipClick?.(chips[index])}
 					>
 						{chips[index]}

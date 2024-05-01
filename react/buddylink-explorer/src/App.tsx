@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import ConnectButton from "./components/ConnectButton";
 import { useInitBuddyLink, useBuddyState } from "buddy.link";
-import Organization from "./ui/Organization";
+import Tables from "./ui/Tables";
 
 const App = () => {
 	const wallet = useWallet();
@@ -22,7 +22,7 @@ const App = () => {
 			<Header />
 			<div className="container flex-1">
 				{!wallet.connected && <ConnectButton />}
-				{wallet.connected && <Organization />}
+				{wallet.connected && <Tables />}
 			</div>
 		</main>
 	);
