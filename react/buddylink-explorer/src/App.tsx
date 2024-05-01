@@ -9,7 +9,6 @@ const App = () => {
 	const wallet = useWallet();
 	const { connection } = useConnection();
 	const [organizationName] = useBuddyState("ORGANIZATION_NAME");
-	const [client] = useBuddyState("BUDDY_CLIENT");
 
 	// THIS MUST BE FIXED IN SDK
 	// returning xyz if organizationName is empty string

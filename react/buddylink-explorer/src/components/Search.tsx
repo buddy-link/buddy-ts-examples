@@ -26,10 +26,10 @@ const Search = ({
 			{radioValue ? (
 				<div>
 					<button
-						className={` text-black font-bold px-2 rounded-l-lg uppercase border border-primary  ${
+						className={` font-bold px-2 rounded-l-lg uppercase border border-primary  ${
 							radioValue === RadioSelectorType.Organization
-								? "bg-primary"
-								: "bg-primary-dark text-gray-700"
+								? "bg-primary text-black"
+								: "bg-primary-dark"
 						}`}
 						onClick={() =>
 							changeRadioStatus?.(RadioSelectorType.Organization)
@@ -38,10 +38,10 @@ const Search = ({
 						Organizations
 					</button>
 					<button
-						className={` text-black font-bold px-2 rounded-r-lg uppercase border border-primary  ${
+						className={`  font-bold px-2 rounded-r-lg uppercase border border-primary  ${
 							radioValue === RadioSelectorType.Member
-								? "bg-primary"
-								: "bg-primary-dark text-gray-700"
+								? "bg-primary text-black"
+								: "bg-primary-dark"
 						}`}
 						onClick={() =>
 							changeRadioStatus?.(RadioSelectorType.Member)
