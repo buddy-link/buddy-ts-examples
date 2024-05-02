@@ -1,30 +1,43 @@
 import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletIcon } from "@solana/wallet-adapter-react-ui";
 
 const Header = () => {
-  const wallet = useWallet();
+	const wallet = useWallet();
 
-  const handleDisconnect = () => {
-    wallet.disconnect();
-  };
+	const handleDisconnect = () => {
+		wallet.disconnect();
+	};
 
-  return (
-    <header>
-      <div className="container h-20 flex items-center">
-        <h2 className="text-2xl text-primary font-bold">Organization Audit</h2>
-        <div className="ml-auto flex items-center gap-6">
-          <span className="text-xs">{wallet.publicKey?.toString()}</span>
-          {wallet.connected && (
-            <button
-              onClick={handleDisconnect}
-              className="bg-primary text-black font-bold p-3 rounded-lg uppercase"
-            >
-              Disconnect
-            </button>
-          )}
-        </div>
-      </div>
-    </header>
-  );
+	return (
+		<header>
+			<div className="container h-20 flex items-center p-5 ">
+				<h2 className="text-2xl text-primary font-bold">
+					Organization Audit
+				</h2>
+				<div className="ml-auto flex flex-col md:flex-row items-center gap-2 md:gap-6">
+					<div className="flex gap-1 md:gap-2 items-center justify-center ">
+						<WalletIcon
+							className="w-4 h-4 md:h-6 md:w-6"
+							wallet={wallet.wallet}
+						/>
+						<span className="text-xs md:text-base font-bold">{`${wallet.publicKey
+							?.toString()
+							.slice(0, 4)}...${wallet.publicKey
+							?.toString()
+							.slice(-4)}`}</span>
+					</div>
+					{wallet.connected && (
+						<button
+							onClick={handleDisconnect}
+							className="bg-primary text-black text-sm font-bold p-2 md:p-3 rounded-lg uppercase"
+						>
+							Disconnect
+						</button>
+					)}
+				</div>
+			</div>
+		</header>
+	);
 };
 
 export default Header;

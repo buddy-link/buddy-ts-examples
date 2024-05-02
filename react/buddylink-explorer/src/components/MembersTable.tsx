@@ -24,14 +24,16 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 		);
 	}
 	return (
-		<div className="flex flex-col gap-4">
-			<table className="w-full">
+		<div className="flex flex-col gap-4 pb-3">
+			<table className="w-full ">
 				<thead>
-					<tr>
-						<th align="center">#</th>
-						<th>Profile</th>
-						<th>Member</th>
-						<th>Treasury count</th>
+					<tr className="text-xs md:text-base">
+						<th align="center" className="px-2">
+							#
+						</th>
+						<th className="px-2">Profile</th>
+						<th className="px-2">Member</th>
+						<th className="px-2 ">Treasury count</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -42,7 +44,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 							</td>
 							<td
 								align="center"
-								className={`py-2 px-4 rounded-l-md ${
+								className={`py-2 px-2 md:px-4 rounded-l-md ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
@@ -50,7 +52,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 							</td>
 							<td
 								align="center"
-								className={`py-2 px-4 hover:bg-primary hover:text-primary-dark  ${
+								className={`py-2 px-2 md:px-4 hover:bg-primary hover:text-primary-dark  ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
@@ -70,7 +72,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 							</td>
 							<td
 								align="center"
-								className={`py-2 px-4 rounded-r-md ${
+								className={`py-2 px-2 md:px-4 rounded-r-md ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
@@ -80,7 +82,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 					))}
 				</tbody>
 			</table>
-			<div className="flex gap-2 justify-end">
+			<div className=" flex gap-2 justify-center lg:justify-end">
 				<button
 					className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
 					onClick={() => onNavigate("prev")}

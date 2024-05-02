@@ -18,7 +18,7 @@ const App = () => {
 	});
 
 	return (
-		<main className="min-h-svh flex flex-col">
+		<main className="min-h-svh flex flex-col mb-2 min-w-[360px] overflow-x-auto">
 			<Header />
 			<div className="container flex-1">
 				{!wallet.connected && <ConnectButton />}
