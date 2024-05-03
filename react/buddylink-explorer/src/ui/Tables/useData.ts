@@ -6,6 +6,7 @@ import { MemberTableRow } from "../../components/MembersTable";
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
 import { serializedMemberType } from "./types";
 import { OrganizationTableRow } from "../../components/types";
+// import { useConnection } from "@solana/wallet-adapter-react";
 
 interface Props {
 	memberName: string;
@@ -16,6 +17,64 @@ const useData = ({ memberName }: Props) => {
 	const [members] = useBuddyState("BUDDY_MEMBERS");
 
 	const [membersPage, setMembersPage] = useState(0);
+
+	// const [serializedMembers, setSerializedMembers] = useState<
+	// 	serializedMemberType[]
+	// >([]);
+
+	// const { connection } = useConnection();
+
+	const pageMembers = useMemo(() => {
+		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
+
+		return members
+			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
+			.slice(0, MEMBER_ITEMS_PER_PAGE);
+	}, [members, membersPage]);
+
+	// useEffect(() => {
+	// 	const getTreasury = async () => {
+	// 		for (const member of pageMembers) {
+	// 			const acc = await connection.getAccountInfo(
+	// 				member.account.owner
+	// 			);
+
+	// 			console.log("acc: ", acc);
+
+	// 			// Decoder para converter bytes em strings, assumindo UTF-8
+	// 			const extractPublicKey = (start: any, end: any) => {
+	// 				const publicKeyBytes = acc?.data.subarray(start, end) ?? [];
+	// 				// Converter cada byte em uma string hexadecimal
+	// 				return Array.from(publicKeyBytes)
+	// 					.map((byte) => byte.toString(16).padStart(2, "0"))
+	// 					.join("")
+	// 					.replace(/^0+/, "");
+	// 			};
+
+	// 			// Offsets dos owners e o tamanho fixo de cada PublicKey
+	// 			const ownerOffsets = [55, 121, 187, 251];
+	// 			const publicKeySize = 32; // Supondo 32 bytes por PublicKey
+
+	// 			// Extrair cada PublicKey baseado no offset e no tamanho fixo
+	// 			const owners = ownerOffsets
+	// 				.map((offset) => {
+	// 					return extractPublicKey(offset, offset + publicKeySize);
+	// 				})
+	// 				.filter((owner) => owner);
+
+	// 			console.log("Owners PublicKeys:", owners);
+
+	// 			const res = await getTreasuryAccounts(connection, {
+	// 				owner: acc?.owner.toBase58(),
+	// 			});
+	// 			console.log("member: ", member.publicKey.toBase58());
+	// 			console.log("treasury: ", res);
+	// 		}
+	// 	};
+	// 	getTreasury();
+
+	// 	console.log("members: ", members);
+	// }, [connection, members, pageMembers]);
 
 	const organizationData = useMemo<OrganizationTableRow[]>(
 		() => [
@@ -102,9 +161,8 @@ const useData = ({ memberName }: Props) => {
 		return members
 			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
 			.slice(0, MEMBER_ITEMS_PER_PAGE)
-
 			.map(serializeMember);
-	}, [memberName, members, membersPage, serializeMember]);
+	}, [memberName, members, pageMembers, serializeMember]);
 
 	const handleNavigateMembers = (type: "prev" | "next") => {
 		if (type === "prev") {

@@ -18,7 +18,7 @@ interface Props {
 const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 	if (isLoading) {
 		return (
-			<div className="p-4">
+			<div className="p-4 h-36 flex items-center justify-center">
 				<Loader />
 			</div>
 		);
