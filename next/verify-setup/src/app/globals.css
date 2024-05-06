@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.root {
+	@apply font-['Poppins'];
+}
+
+@layer components {
+	.brand-btn {
+		@apply rounded-lg px-6 py-3 font-['poppins'] font-bold text-white transition ease-in-out;
+		background: var(--light-primary-main, #ffb780);
+		box-shadow: 0px -4px 0px 0px #ff9b61 inset;
+	}
+
+	.brand-btn:hover {
+		box-shadow: 0px -0px 0px 0px #ff9b61 inset;
+		@apply translate-y-[2px];
+	}
+
+	.custom-checkbox {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	.custom-checkbox input[type="checkbox"] {
+		@apply bg-[#FF7661]/40;
+		appearance: none;
+		-webkit-appearance: none;
+		/* background-color: #ff7661; */
+		margin: 0;
+		width: 24px;
+		height: 24px;
+		/* border: 1px solid; */
+		border-radius: 8px;
+		position: relative;
+	}
+
+	.custom-checkbox input[type="checkbox"]::after {
+		content: "✗";
+		@apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100;
+		color: #ff7661;
+		position: absolute;
+	}
+
+	.custom-checkbox input[type="checkbox"]:checked {
+		@apply bg-[#3CDD38]/40;
+	}
+
+	.custom-checkbox input[type="checkbox"]:checked::after {
+		content: "✓";
+		@apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100;
+		color: #3cdd38;
+		position: absolute;
+	}
+
+	.custom-checkbox label {
+		margin-left: 8px;
+	}
+}
+
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
+	}
+}
+
+/* input[type="checkbox"] {
+	visibility: hidden;
+} */
