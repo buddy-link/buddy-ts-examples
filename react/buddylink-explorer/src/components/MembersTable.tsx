@@ -2,8 +2,8 @@ import { MEMBER_ITEMS_PER_PAGE } from "../lib/constants";
 import Loader from "./Loader";
 
 export type MemberTableRow = {
-	profile: string;
-	member: string;
+	profile: unknown;
+	member: unknown;
 	treasuryCount: number;
 	publicKey: string;
 };
@@ -42,17 +42,51 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 							<td align="center">
 								#{page * MEMBER_ITEMS_PER_PAGE + index + 1}
 							</td>
+
 							<td
 								align="center"
-								className={`py-2 px-2 md:px-4 rounded-l-md ${
+								className={`py-2 px-6 hover:bg-primary hover:text-primary-dark  ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
-								{item.profile}
+								<a
+									href={`https://solscan.io/account/${item.publicKey}`}
+									rel="noreferrer"
+									target="_blank"
+								>
+									<div className="flex xl:hidden items-center justify-center gap-2">
+										{/*@ts-expect-error types still WIP*/}
+										{item.profile.name.length > 12 ? (
+											`${
+												//@ts-expect-error types still WIP
+												item.profile.name.slice(0, 9)
+											}...`
+										) : (
+											<>
+												{/*@ts-expect-error types still WIP*/}
+												{item.profile.name}
+											</>
+										)}
+										<img
+											src="/solscan-logo.png"
+											alt="Solscan"
+											className="w-4 h-4"
+										/>
+									</div>
+									<div className="hidden xl:flex items-center justify-center gap-2">
+										{/*@ts-expect-error types still WIP*/}
+										{item.profile.name}
+										<img
+											src="/solscan-logo.png"
+											alt="Solscan"
+											className="w-4 h-4"
+										/>
+									</div>
+								</a>
 							</td>
 							<td
 								align="center"
-								className={`py-2 px-2 md:px-4 hover:bg-primary hover:text-primary-dark  ${
+								className={`py-2 px-6 hover:bg-primary hover:text-primary-dark  ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
@@ -62,17 +96,39 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 									target="_blank"
 									className="flex items-center justify-center gap-2"
 								>
-									{item.member}
-									<img
-										src="/solscan-logo.png"
-										alt="Solscan"
-										className="w-4 h-4"
-									/>
+									<div className="flex xl:hidden items-center justify-center gap-2">
+										{/*@ts-expect-error types still WIP*/}
+										{item.member.name.length > 12 ? (
+											`${
+												//@ts-expect-error types still WIP
+												item.member.name.slice(0, 9)
+											}...`
+										) : (
+											<>
+												{/*@ts-expect-error types still WIP*/}
+												{item.member.name}
+											</>
+										)}
+										<img
+											src="/solscan-logo.png"
+											alt="Solscan"
+											className="w-4 h-4"
+										/>
+									</div>
+									<div className="hidden xl:flex items-center justify-center gap-2">
+										{/*@ts-expect-error types still WIP*/}
+										{item.member.name}
+										<img
+											src="/solscan-logo.png"
+											alt="Solscan"
+											className="w-4 h-4"
+										/>
+									</div>
 								</a>
 							</td>
 							<td
 								align="center"
-								className={`py-2 px-2 md:px-4 rounded-r-md ${
+								className={`py-2 px-6 rounded-r-md ${
 									index % 2 ? "bg-primary-dark" : ""
 								}`}
 							>
@@ -80,25 +136,31 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 							</td>
 						</tr>
 					))}
+					<tr className="">
+						<td className=" w-full " colSpan={5}>
+							<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
+								<button
+									className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
+									onClick={() => onNavigate("prev")}
+									disabled={page === 0}
+								>
+									Prev
+								</button>
+								<span>/</span>
+								<button
+									className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
+									onClick={() => onNavigate("next")}
+									disabled={
+										data.length < MEMBER_ITEMS_PER_PAGE
+									}
+								>
+									Next
+								</button>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
-			<div className=" flex gap-2 justify-center lg:justify-end">
-				<button
-					className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
-					onClick={() => onNavigate("prev")}
-					disabled={page === 0}
-				>
-					Prev
-				</button>
-				<span>/</span>
-				<button
-					className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
-					onClick={() => onNavigate("next")}
-					disabled={data.length < MEMBER_ITEMS_PER_PAGE}
-				>
-					Next
-				</button>
-			</div>
 		</div>
 	);
 };

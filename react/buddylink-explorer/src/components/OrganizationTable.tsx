@@ -19,6 +19,7 @@ const OrganizationTable = () => {
 		membersData,
 		membersPage,
 		handleNavigateMembers,
+		loadingSerializer,
 	} = useData();
 
 	return (
@@ -115,7 +116,10 @@ const OrganizationTable = () => {
 							<div className=" overflow-x-auto max-w-full">
 								<MembersTable
 									data={membersData}
-									isLoading={loading.isLoadingMembers}
+									isLoading={
+										loading.isLoadingMembers ||
+										loadingSerializer
+									}
 									page={membersPage}
 									onNavigate={handleNavigateMembers}
 								/>

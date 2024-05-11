@@ -1,84 +1,125 @@
-import { useBuddyState } from "buddy.link";
+import {
+	unwrapProfileAccountData,
+	// getProfileAccounts,
+	// getTreasuryAccounts,
+	unwrapTreasuryAccountData,
+	useBuddyState,
+} from "buddy.link";
 import moment from "moment";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MemberTableRow } from "../../components/MembersTable";
 
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
 import { serializedMemberType } from "./types";
 import { OrganizationTableRow } from "../../components/types";
-// import useSearch from "./useSearch";
-// import { useConnection } from "@solana/wallet-adapter-react";
-
-// interface Props {
-// 	memberName: string;
-// }
+import { useConnection } from "@solana/wallet-adapter-react";
 
 const useData = () => {
 	const [organization] = useBuddyState("BUDDY_ORGANIZATION");
 	const [members] = useBuddyState("BUDDY_MEMBERS");
+	const [loadingSerializer, setLoadingSerializer] = useState(true);
 	const [searchMemberName] = useBuddyState("SEARCH_MEMBER_NAME");
 
 	const [membersPage, setMembersPage] = useState(0);
+	const [pageMembersParsed, setPageMembersParsed] = useState<
+		serializedMemberType[]
+	>([]);
 
-	console.log("member name useData1: ", searchMemberName);
+	const { connection } = useConnection();
 
-	// const [serializedMembers, setSerializedMembers] = useState<
-	// 	serializedMemberType[]
-	// >([]);
+	const serializeMember = useCallback(
+		(
+			profile: unknown,
+			member: unknown,
+			treasury: unknown
+		): serializedMemberType => {
+			return {
+				// @ts-expect-error types still WIP
+				profile: profile || "-",
+				// @ts-expect-error types still WIP
+				member: member?.account || "",
+				// @ts-expect-error types still WIP
+				treasuryCount: treasury.owners.filter(
+					// @ts-expect-error types still WIP
+					(owner: unknown) => owner?.share > 0
+				).length,
+				// @ts-expect-error types still WIP
+				publicKey: member?.publicKey.toBase58(),
+			};
+		},
+		[]
+	);
 
-	// const { connection } = useConnection();
+	useEffect(() => {
+		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
+		const pageMembers = members
+			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
+			.filter((item: unknown) => {
+				const searchRegex = new RegExp(`.*${searchMemberName}.*`, "i");
+				// @ts-expect-error types still WIP
+				return searchRegex.test(item?.account?.name);
+			});
 
-	// const pageMembers = useMemo(() => {
-	// 	const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
+		const getTreasury = async (): Promise<serializedMemberType[]> => {
+			setLoadingSerializer(true);
+			const memberDataPromises = pageMembers.map(
+				async (member: unknown) => {
+					// Fetch owner account info and unwrap in parallel
+					const ownerPromise = connection.getAccountInfo(
+						// @ts-expect-error types still WIP
+						member?.account?.owner
+					);
+					return ownerPromise.then((owner) => {
+						if (!owner) {
+							throw new Error("Owner not found");
+						}
 
-	// 	return members
-	// 		?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
-	// 		.slice(0, MEMBER_ITEMS_PER_PAGE);
-	// }, [members, membersPage]);
+						const ownerTreasury = unwrapTreasuryAccountData(
+							owner.data
+						);
 
-	// useEffect(() => {
-	// 	const getTreasury = async () => {
-	// 		for (const member of pageMembers) {
-	// 			const acc = await connection.getAccountInfo(
-	// 				member.account.owner
-	// 			);
+						// Fetch profile data and unwrap
+						return connection
+							.getAccountInfo(ownerTreasury.owners[0].owner)
+							.then((profileData) => {
+								if (!profileData) {
+									throw new Error("Profile data not found");
+								}
 
-	// 			console.log("acc: ", acc);
+								const profile = unwrapProfileAccountData(
+									profileData.data
+								);
 
-	// 			// Decoder para converter bytes em strings, assumindo UTF-8
-	// 			const extractPublicKey = (start: any, end: any) => {
-	// 				const publicKeyBytes = acc?.data.subarray(start, end) ?? [];
-	// 				// Converter cada byte em uma string hexadecimal
-	// 				return Array.from(publicKeyBytes)
-	// 					.map((byte) => byte.toString(16).padStart(2, "0"))
-	// 					.join("")
-	// 					.replace(/^0+/, "");
-	// 			};
+								// Serialize the member data
+								return serializeMember(
+									profile,
+									member,
+									ownerTreasury
+								);
+							});
+					});
+				}
+			);
 
-	// 			// Offsets dos owners e o tamanho fixo de cada PublicKey
-	// 			const ownerOffsets = [55, 121, 187, 251];
-	// 			const publicKeySize = 32; // Supondo 32 bytes por PublicKey
+			try {
+				// Wait for all promises to resolve
+				const membersw = await Promise.all(memberDataPromises);
 
-	// 			// Extrair cada PublicKey baseado no offset e no tamanho fixo
-	// 			const owners = ownerOffsets
-	// 				.map((offset) => {
-	// 					return extractPublicKey(offset, offset + publicKeySize);
-	// 				})
-	// 				.filter((owner) => owner);
+				// Update page members parsed
+				setPageMembersParsed(membersw);
+				return membersw;
+			} catch (error) {
+				console.error("Error fetching treasury data:", error);
+				throw error; // Propagate the error
+			} finally {
+				setLoadingSerializer(false);
+			}
+		};
 
-	// 			console.log("Owners PublicKeys:", owners);
+		getTreasury();
 
-	// 			const res = await getTreasuryAccounts(connection, {
-	// 				owner: acc?.owner.toBase58(),
-	// 			});
-	// 			console.log("member: ", member.publicKey.toBase58());
-	// 			console.log("treasury: ", res);
-	// 		}
-	// 	};
-	// 	getTreasury();
-
-	// 	console.log("members: ", members);
-	// }, [connection, members, pageMembers]);
+		console.log("members: ", members);
+	}, [connection, members, membersPage, searchMemberName, serializeMember]);
 
 	const organizationData = useMemo<OrganizationTableRow[]>(
 		() => [
@@ -132,45 +173,28 @@ const useData = () => {
 		[organization, members]
 	);
 
-	const serializeMember = useCallback(
-		(member: unknown): serializedMemberType => {
-			return {
-				profile: "-",
-				// @ts-expect-error types still WIP
-				member: member?.account?.name || "",
-				treasuryCount: 1,
-				// @ts-expect-error types still WIP
-				publicKey: member?.publicKey.toBase58(),
-			};
-		},
-		[]
-	);
-
 	const membersData = useMemo<MemberTableRow[]>(() => {
 		if (!members?.length) return [];
 
-		if (searchMemberName.length) {
-			const searchRegex = new RegExp(`.*${searchMemberName}.*`, "i");
-			console.log("searchRegex: ", searchRegex);
+		// if (searchMemberName.length) {
+		// 	const searchRegex = new RegExp(`.*${searchMemberName}.*`, "i");
+		// 	console.log("searchRegex: ", searchRegex);
 
-			console.log("member name useData: ", searchMemberName);
+		// 	console.log("member name useData: ", searchMemberName);
 
-			return members
-				.slice(0, MEMBER_ITEMS_PER_PAGE)
-				.filter((item: unknown) => {
-					// @ts-expect-error types still WIP
-					return searchRegex.test(item?.account?.name);
-				})
-				.map(serializeMember);
-		}
+		// 	return members
+		// 		.slice(0, MEMBER_ITEMS_PER_PAGE)
+		// .filter((item: unknown) => {
+		// 	// @ts-expect-error types still WIP
+		// 	return searchRegex.test(item?.account?.name);
+		// })
+		// 		.map(serializeMember);
+		// }
 
-		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
+		// const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
 
-		return members
-			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
-			.slice(0, MEMBER_ITEMS_PER_PAGE)
-			.map(serializeMember);
-	}, [searchMemberName, members, membersPage, serializeMember]);
+		return pageMembersParsed;
+	}, [members?.length, pageMembersParsed]);
 
 	const handleNavigateMembers = (type: "prev" | "next") => {
 		if (type === "prev") {
@@ -187,6 +211,7 @@ const useData = () => {
 		membersData,
 		membersPage,
 		handleNavigateMembers,
+		loadingSerializer,
 	};
 };
 
