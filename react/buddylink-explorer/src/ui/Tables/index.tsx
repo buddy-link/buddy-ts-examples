@@ -1,7 +1,6 @@
 import Search from "../../components/Search";
 import { useBuddyState, getOrganizationAccounts } from "buddy.link";
 import useSearch from "./useSearch";
-// import useData from "./useData";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RadioSelectorType } from "./types";
 import TableProvider from "../../components/TableProvider";
@@ -23,6 +22,8 @@ const Tables = () => {
 		memberName,
 		handleMemberNameChange,
 	} = useSearch();
+
+	console.log("member name Index: ", memberName);
 
 	const chips = useMemo(() => {
 		const regex = new RegExp(organizationValue, "i");
@@ -51,28 +52,19 @@ const Tables = () => {
 	);
 
 	useEffect(() => {
-		const fetchOrgNames = async () => {
+		const fetchOrgsName = async () => {
 			const orgs = await getOrganizationAccounts(connection);
 
-			//Getting the name of the organization inside account.data bytes
 			const orgNamesArray = orgs.map((org) => {
-				const data = org.account.data;
-				const nameBytes = data.subarray(53, 93);
-				const nameDecoder = new TextDecoder("utf-8");
-				const name = nameDecoder.decode(nameBytes);
-
-				console.log(name);
-				//remove null characters from the end of the string
-				// eslint-disable-next-line no-control-regex
-				return name.replace(/[\x00]+$/g, "");
+				//eslint-disable-next-line
+				//@ts-ignore
+				const orgName = org.parsedData.name;
+				return orgName;
 			});
-
-			console.log(orgNamesArray);
-
 			setOrgNameList(orgNamesArray);
 		};
 
-		fetchOrgNames();
+		fetchOrgsName();
 	}, [connection]);
 
 	return (
@@ -97,7 +89,9 @@ const Tables = () => {
 						title="Search for member"
 						inputPlaceholder="Member name"
 						inputValue={memberName}
-						onInputChange={handleMemberNameChange}
+						onInputChange={(event) =>
+							handleMemberNameChange(event.target.value)
+						}
 					/>
 				)}
 			</div>

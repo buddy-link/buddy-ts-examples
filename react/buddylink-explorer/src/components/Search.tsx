@@ -27,6 +27,7 @@ const Search = ({
 				<div>
 					{Object.values(RadioSelectorType).map((value) => (
 						<button
+							key={value}
 							className={` font-bold px-2 py-1 lg:py-0 first:rounded-l-lg last:rounded-r-lg uppercase border border-primary text-xs md:text-sm  ${
 								radioValue === RadioSelectorType[value]
 									? "bg-primary text-black"

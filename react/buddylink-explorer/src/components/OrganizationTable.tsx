@@ -1,7 +1,7 @@
 import { useBuddyState } from "buddy.link";
 import MembersTable from "./MembersTable";
 import EmptyState from "./EmptyState";
-import useSearch from "../ui/Tables/useSearch";
+// import useSearch from "../ui/Tables/useSearch";
 import useData from "../ui/Tables/useData";
 
 const OrganizationTable = () => {
@@ -10,16 +10,16 @@ const OrganizationTable = () => {
 	const [loading] = useBuddyState("BUDDY_LOADING");
 	const [organizationName] = useBuddyState("ORGANIZATION_NAME");
 
-	const { memberName } = useSearch();
+	console.log("organizationName: ", organizationName);
+
+	// const { memberName } = useSearch();
 
 	const {
 		organizationData,
 		membersData,
 		membersPage,
 		handleNavigateMembers,
-	} = useData({
-		memberName,
-	});
+	} = useData();
 
 	return (
 		<>

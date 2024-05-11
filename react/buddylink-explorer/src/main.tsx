@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import {
@@ -14,17 +13,18 @@ initBuddyState({
 	...initialBuddyLink,
 	...{
 		ORGANIZATION_NAME: "",
+		SEARCH_MEMBER_NAME: "",
 	},
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-		<ConnectionProvider endpoint={import.meta.env.VITE_RPC_ENDPOINT}>
-			<WalletProvider wallets={[]} autoConnect>
-				<WalletModalProvider>
-					<App />
-				</WalletModalProvider>
-			</WalletProvider>
-		</ConnectionProvider>
-	</React.StrictMode>
+	// <React.StrictMode>
+	<ConnectionProvider endpoint={import.meta.env.VITE_RPC_ENDPOINT}>
+		<WalletProvider wallets={[]} autoConnect>
+			<WalletModalProvider>
+				<App />
+			</WalletModalProvider>
+		</WalletProvider>
+	</ConnectionProvider>
+	// </React.StrictMode>
 );

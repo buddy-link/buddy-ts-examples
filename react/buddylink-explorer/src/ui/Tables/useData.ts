@@ -6,17 +6,21 @@ import { MemberTableRow } from "../../components/MembersTable";
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
 import { serializedMemberType } from "./types";
 import { OrganizationTableRow } from "../../components/types";
+// import useSearch from "./useSearch";
 // import { useConnection } from "@solana/wallet-adapter-react";
 
-interface Props {
-	memberName: string;
-}
+// interface Props {
+// 	memberName: string;
+// }
 
-const useData = ({ memberName }: Props) => {
+const useData = () => {
 	const [organization] = useBuddyState("BUDDY_ORGANIZATION");
 	const [members] = useBuddyState("BUDDY_MEMBERS");
+	const [searchMemberName] = useBuddyState("SEARCH_MEMBER_NAME");
 
 	const [membersPage, setMembersPage] = useState(0);
+
+	console.log("member name useData1: ", searchMemberName);
 
 	// const [serializedMembers, setSerializedMembers] = useState<
 	// 	serializedMemberType[]
@@ -24,13 +28,13 @@ const useData = ({ memberName }: Props) => {
 
 	// const { connection } = useConnection();
 
-	const pageMembers = useMemo(() => {
-		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
+	// const pageMembers = useMemo(() => {
+	// 	const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
 
-		return members
-			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
-			.slice(0, MEMBER_ITEMS_PER_PAGE);
-	}, [members, membersPage]);
+	// 	return members
+	// 		?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
+	// 		.slice(0, MEMBER_ITEMS_PER_PAGE);
+	// }, [members, membersPage]);
 
 	// useEffect(() => {
 	// 	const getTreasury = async () => {
@@ -145,8 +149,12 @@ const useData = ({ memberName }: Props) => {
 	const membersData = useMemo<MemberTableRow[]>(() => {
 		if (!members?.length) return [];
 
-		if (memberName.length) {
-			const searchRegex = new RegExp(`.*${memberName}.*`, "i");
+		if (searchMemberName.length) {
+			const searchRegex = new RegExp(`.*${searchMemberName}.*`, "i");
+			console.log("searchRegex: ", searchRegex);
+
+			console.log("member name useData: ", searchMemberName);
+
 			return members
 				.slice(0, MEMBER_ITEMS_PER_PAGE)
 				.filter((item: unknown) => {
@@ -162,7 +170,7 @@ const useData = ({ memberName }: Props) => {
 			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
 			.slice(0, MEMBER_ITEMS_PER_PAGE)
 			.map(serializeMember);
-	}, [memberName, members, pageMembers, serializeMember]);
+	}, [searchMemberName, members, membersPage, serializeMember]);
 
 	const handleNavigateMembers = (type: "prev" | "next") => {
 		if (type === "prev") {

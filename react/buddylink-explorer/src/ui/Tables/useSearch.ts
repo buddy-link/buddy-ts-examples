@@ -1,28 +1,41 @@
 import { useBuddyState } from "buddy.link";
 import _ from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 const useSearch = () => {
 	const [, setOrganizationName] = useBuddyState("ORGANIZATION_NAME");
+	const [, setSearchMemberName] = useBuddyState("SEARCH_MEMBER_NAME");
 
 	const [organizationValue, setOrganizationValue] = useState("");
 	const [memberName, setMemberName] = useState("");
 
 	const debouncedSearch = useRef(
-		_.debounce((cb: () => void) => cb(), 1000)
+		_.debounce(
+			(
+				setter: React.Dispatch<React.SetStateAction<string>>,
+				value: string
+			) => {
+				setter(value);
+			},
+			1000
+		)
 	).current;
 
-	const handleOrganizationNameChange = (organizationName: string) => {
-		setOrganizationValue(organizationName);
-	};
+	const handleOrganizationNameChange = useCallback(
+		(organizationName: string) => {
+			setOrganizationValue(organizationName);
+			debouncedSearch(setOrganizationName, organizationName);
+		},
+		[debouncedSearch, setOrganizationName]
+	);
 
-	const handleMemberNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setMemberName(e.target.value);
-	};
-
-	useEffect(() => {
-		debouncedSearch(() => setOrganizationName(organizationValue));
-	}, [debouncedSearch, setOrganizationName, organizationValue]);
+	const handleMemberNameChange = useCallback(
+		(memberName: string) => {
+			setMemberName(memberName);
+			debouncedSearch(setSearchMemberName, memberName);
+		},
+		[debouncedSearch, setSearchMemberName]
+	);
 
 	return {
 		organizationValue,
