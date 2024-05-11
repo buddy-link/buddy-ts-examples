@@ -92,8 +92,9 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 				</button>
 				<span>/</span>
 				<button
-					className="hover:text-primary"
+					className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
 					onClick={() => onNavigate("next")}
+					disabled={data.length < MEMBER_ITEMS_PER_PAGE}
 				>
 					Next
 				</button>
