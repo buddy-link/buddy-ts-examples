@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Search from "../../components/Search";
 import { useBuddyState, getOrganizationAccounts } from "buddy.link";
 import useSearch from "./useSearch";
