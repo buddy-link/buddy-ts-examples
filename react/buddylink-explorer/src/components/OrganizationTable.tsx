@@ -10,8 +10,6 @@ const OrganizationTable = () => {
 	const [loading] = useBuddyState("BUDDY_LOADING");
 	const [organizationName] = useBuddyState("ORGANIZATION_NAME");
 
-	console.log("organizationName: ", organizationName);
-
 	// const { memberName } = useSearch();
 
 	const {

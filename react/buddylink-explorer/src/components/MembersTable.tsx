@@ -1,15 +1,9 @@
 import { MEMBER_ITEMS_PER_PAGE } from "../lib/constants";
+import { serializedMemberType } from "../ui/Tables/types";
 import Loader from "./Loader";
 
-export type MemberTableRow = {
-	profile: unknown;
-	member: unknown;
-	treasuryCount: number;
-	publicKey: string;
-};
-
 interface Props {
-	data: MemberTableRow[];
+	data: serializedMemberType[];
 	isLoading: boolean;
 	page: number;
 	onNavigate: (type: "prev" | "next") => void;
@@ -38,8 +32,13 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 				</thead>
 				<tbody>
 					{data.map((item, index) => (
-						<tr key={item.publicKey}>
-							<td align="center">
+						<tr key={item.publicKey as string}>
+							<td
+								align="center"
+								className={`py-2 px-6   ${
+									index % 2 ? "bg-primary-dark" : ""
+								}`}
+							>
 								#{page * MEMBER_ITEMS_PER_PAGE + index + 1}
 							</td>
 

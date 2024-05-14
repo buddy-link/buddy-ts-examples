@@ -1,16 +1,18 @@
+import React from "react";
 import { RadioSelectorType } from "../ui/Tables/types";
 
-interface Props {
+interface Props<T> {
 	title: string;
 	inputPlaceholder: string;
 	inputValue: string;
 	onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	radioValue?: string;
-	changeRadioStatus?: (value: RadioSelectorType) => void;
+	radioValue?: T;
+	changeRadioStatus?: (value: T) => void;
 	chips?: string[];
 	onChipClick?: (chip: string) => void;
 }
-const Search = ({
+
+const Search = <T,>({
 	title,
 	inputPlaceholder,
 	inputValue,
@@ -19,23 +21,21 @@ const Search = ({
 	changeRadioStatus,
 	chips = [],
 	onChipClick,
-}: Props) => (
+}: Props<T>) => (
 	<div className="w-full bg-[#282828] p-3 sm:p-4 rounded-md flex flex-col gap-4">
 		<div className="flex flex-col gap-2 items-start justify-center">
 			<h2 className="font-bold min-w-[260px] sm:text-lg">{title}</h2>
-			{radioValue ? (
+			{radioValue && changeRadioStatus ? (
 				<div>
 					{Object.values(RadioSelectorType).map((value) => (
 						<button
 							key={value}
-							className={` font-bold px-2 py-1 lg:py-0 first:rounded-l-lg last:rounded-r-lg uppercase border border-primary text-xs md:text-sm  ${
-								radioValue === RadioSelectorType[value]
+							className={`font-bold px-2 py-1 lg:py-0 first:rounded-l-lg last:rounded-r-lg uppercase border border-primary text-xs md:text-sm ${
+								radioValue === value
 									? "bg-primary text-black"
 									: "bg-primary-dark"
 							}`}
-							onClick={() =>
-								changeRadioStatus?.(RadioSelectorType[value])
-							}
+							onClick={() => changeRadioStatus(value as T)}
 						>
 							{value}
 						</button>
@@ -51,18 +51,18 @@ const Search = ({
 		/>
 		<div className="flex gap-x-2 overflow-x-auto">
 			{chips.length > 0 &&
-				chips.slice(0, 3).map((chip, index) => (
+				chips.slice(0, 3).map((chip) => (
 					<button
 						key={chip}
-						className="bg-primary text-black font-bold  px-2 py-1 lg:py-0 rounded-lg uppercase hover:opacity-70 w-fit text-xs sm:text-sm"
-						onClick={() => onChipClick?.(chips[index])}
+						className="bg-primary text-black font-bold px-2 py-1 lg:py-0 rounded-lg uppercase hover:opacity-70 w-fit text-xs sm:text-sm"
+						onClick={() => onChipClick?.(chip)}
 					>
-						{chips[index]}
+						{chip}
 					</button>
 				))}
 			{chips.length > 3 ? (
 				<button
-					className="bg-primary text-black font-bold  px-2 py-1 lg:py-0 rounded-lg uppercase w-fit text-sm"
+					className="bg-primary text-black font-bold px-2 py-1 lg:py-0 rounded-lg uppercase w-fit text-sm"
 					disabled
 				>
 					{`+${chips.length - 3} more`}

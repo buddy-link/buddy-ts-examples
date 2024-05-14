@@ -6,8 +6,9 @@ export enum RadioSelectorType {
 }
 
 export type serializedMemberType = {
-	profile: string;
-	member: string;
-	treasuryCount: number;
-	publicKey: string;
+	profile?: unknown;
+	member?: unknown;
+	treasuryCount?: number;
+	publicKey?: string;
+	profilePubkey?: string;
 };

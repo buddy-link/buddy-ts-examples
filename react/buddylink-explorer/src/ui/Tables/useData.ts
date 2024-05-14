@@ -1,4 +1,5 @@
 import {
+	getTreasuryAccounts,
 	unwrapProfileAccountData,
 	// getProfileAccounts,
 	// getTreasuryAccounts,
@@ -7,7 +8,6 @@ import {
 } from "buddy.link";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MemberTableRow } from "../../components/MembersTable";
 
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
 import { serializedMemberType } from "./types";
@@ -17,8 +17,8 @@ import { useConnection } from "@solana/wallet-adapter-react";
 const useData = () => {
 	const [organization] = useBuddyState("BUDDY_ORGANIZATION");
 	const [members] = useBuddyState("BUDDY_MEMBERS");
+	const [memberName] = useBuddyState("MEMBER_NAME");
 	const [loadingSerializer, setLoadingSerializer] = useState(true);
-	const [searchMemberName] = useBuddyState("SEARCH_MEMBER_NAME");
 
 	const [membersPage, setMembersPage] = useState(0);
 	const [pageMembersParsed, setPageMembersParsed] = useState<
@@ -34,15 +34,11 @@ const useData = () => {
 			treasury: unknown
 		): serializedMemberType => {
 			return {
-				// @ts-expect-error types still WIP
 				profile: profile || "-",
 				// @ts-expect-error types still WIP
 				member: member?.account || "",
 				// @ts-expect-error types still WIP
-				treasuryCount: treasury.owners.filter(
-					// @ts-expect-error types still WIP
-					(owner: unknown) => owner?.share > 0
-				).length,
+				treasuryCount: treasury.length,
 				// @ts-expect-error types still WIP
 				publicKey: member?.publicKey.toBase58(),
 			};
@@ -55,7 +51,7 @@ const useData = () => {
 		const pageMembers = members
 			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
 			.filter((item: unknown) => {
-				const searchRegex = new RegExp(`.*${searchMemberName}.*`, "i");
+				const searchRegex = new RegExp(`.*${memberName}.*`, "i");
 				// @ts-expect-error types still WIP
 				return searchRegex.test(item?.account?.name);
 			});
@@ -90,12 +86,17 @@ const useData = () => {
 									profileData.data
 								);
 
+								return getTreasuryAccounts(connection, {
+									owner: ownerTreasury.owners[0].owner,
+								}).then((treasury) => {
+									return serializeMember(
+										profile,
+										member,
+										treasury
+									);
+								});
+
 								// Serialize the member data
-								return serializeMember(
-									profile,
-									member,
-									ownerTreasury
-								);
 							});
 					});
 				}
@@ -119,7 +120,7 @@ const useData = () => {
 		getTreasury();
 
 		console.log("members: ", members);
-	}, [connection, members, membersPage, searchMemberName, serializeMember]);
+	}, [connection, memberName, members, membersPage, serializeMember]);
 
 	const organizationData = useMemo<OrganizationTableRow[]>(
 		() => [
@@ -173,7 +174,7 @@ const useData = () => {
 		[organization, members]
 	);
 
-	const membersData = useMemo<MemberTableRow[]>(() => {
+	const membersData = useMemo<serializedMemberType[]>(() => {
 		if (!members?.length) return [];
 
 		// if (searchMemberName.length) {

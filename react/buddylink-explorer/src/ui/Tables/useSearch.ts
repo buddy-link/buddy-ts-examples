@@ -1,47 +1,51 @@
 import { useBuddyState } from "buddy.link";
 import _ from "lodash";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 
 const useSearch = () => {
-	const [, setOrganizationName] = useBuddyState("ORGANIZATION_NAME");
-	const [, setSearchMemberName] = useBuddyState("SEARCH_MEMBER_NAME");
+	const [organizationValue, setOrganizationValue] =
+		useBuddyState("ORGANIZATION_NAME");
+	const [memberName, setMemberName] = useBuddyState("MEMBER_NAME");
+	const [wallet, setWallet] = useBuddyState("WALLET_NAME");
+	const [profile, setProfile] = useBuddyState("PROFILE_NAME");
 
-	const [organizationValue, setOrganizationValue] = useState("");
-	const [memberName, setMemberName] = useState("");
+	const [searchTerm, setSearchTerm] = useState({
+		organizationValue,
+		memberName,
+		wallet,
+		profile,
+	});
 
-	const debouncedSearch = useRef(
-		_.debounce(
-			(
-				setter: React.Dispatch<React.SetStateAction<string>>,
-				value: string
-			) => {
-				setter(value);
-			},
-			1000
-		)
-	).current;
-
-	const handleOrganizationNameChange = useCallback(
-		(organizationName: string) => {
-			setOrganizationValue(organizationName);
-			debouncedSearch(setOrganizationName, organizationName);
-		},
-		[debouncedSearch, setOrganizationName]
+	const setters = useMemo(
+		() => ({
+			organizationValue: setOrganizationValue,
+			memberName: setMemberName,
+			wallet: setWallet,
+			profile: setProfile,
+		}),
+		[setOrganizationValue, setMemberName, setWallet, setProfile]
 	);
 
-	const handleMemberNameChange = useCallback(
-		(memberName: string) => {
-			setMemberName(memberName);
-			debouncedSearch(setSearchMemberName, memberName);
+	const debouncedUpdate = useRef(
+		_.debounce((key: keyof typeof setters, value: string) => {
+			setters[key](value);
+		}, 700)
+	).current;
+
+	const handleChange = useCallback(
+		(key: keyof typeof searchTerm, value: string) => {
+			setSearchTerm((prev) => ({
+				...prev,
+				[key]: value,
+			}));
+			debouncedUpdate(key, value);
 		},
-		[debouncedSearch, setSearchMemberName]
+		[debouncedUpdate]
 	);
 
 	return {
-		organizationValue,
-		handleOrganizationNameChange,
-		memberName,
-		handleMemberNameChange,
+		values: searchTerm,
+		handleChange,
 	};
 };
 

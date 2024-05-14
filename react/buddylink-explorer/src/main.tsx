@@ -13,7 +13,9 @@ initBuddyState({
 	...initialBuddyLink,
 	...{
 		ORGANIZATION_NAME: "",
-		SEARCH_MEMBER_NAME: "",
+		MEMBER_NAME: "",
+		WALLET_NAME: "",
+		PROFILE_NAME: "",
 	},
 });
 

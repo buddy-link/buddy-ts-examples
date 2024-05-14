@@ -1,7 +1,7 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Search from "../../components/Search";
 import { useBuddyState, getOrganizationAccounts } from "buddy.link";
 import useSearch from "./useSearch";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { RadioSelectorType } from "./types";
 import TableProvider from "../../components/TableProvider";
 import { useConnection } from "@solana/wallet-adapter-react";
@@ -10,51 +10,42 @@ const Tables = () => {
 	const [members] = useBuddyState("BUDDY_MEMBERS");
 	const { connection } = useConnection();
 	const [orgNameList, setOrgNameList] = useState<string[]>([]);
-	// const [, setOrganizationName] = useBuddyState("ORGANIZATION_NAME");
-
 	const [radioStatus, setRadioStatus] = useState(
 		RadioSelectorType.Organization
 	);
 
-	const {
-		organizationValue,
-		handleOrganizationNameChange,
-		memberName,
-		handleMemberNameChange,
-	} = useSearch();
-
-	console.log("member name Index: ", memberName);
+	const { handleChange, values } = useSearch();
 
 	const chips = useMemo(() => {
-		const regex = new RegExp(organizationValue, "i");
-		//TODO: change array bellow to getOrganizations parsed output
+		const regex = new RegExp(values.organizationValue, "i");
 		return orgNameList.filter((org) => regex.test(org));
-	}, [orgNameList, organizationValue]);
+	}, [orgNameList, values.organizationValue]);
 
 	const handleInputChange = useCallback(
 		(value: string) => {
-			if (radioStatus === RadioSelectorType.Organization) {
-				return handleOrganizationNameChange(value);
+			switch (radioStatus) {
+				case RadioSelectorType.Organization:
+					handleChange("organizationValue", value);
+					break;
+				case RadioSelectorType.Member:
+					handleChange("memberName", value);
+					break;
+				case RadioSelectorType.Wallet:
+					handleChange("wallet", value);
+					break;
+				case RadioSelectorType.Profile:
+					handleChange("profile", value);
+					break;
+				default:
+					console.log("No radio status");
 			}
-			if (radioStatus === RadioSelectorType.Member) {
-				return console.log("Member");
-			}
-			if (radioStatus === RadioSelectorType.Wallet) {
-				return console.log("Wallet");
-			}
-			if (radioStatus === RadioSelectorType.Profile) {
-				return console.log("Profile");
-			}
-
-			return console.log("No radio status");
 		},
-		[radioStatus, handleOrganizationNameChange]
+		[radioStatus, handleChange]
 	);
 
 	useEffect(() => {
 		const fetchOrgsName = async () => {
 			const orgs = await getOrganizationAccounts(connection);
-
 			const orgNamesArray = orgs.map((org) => {
 				//eslint-disable-next-line
 				//@ts-ignore
@@ -70,27 +61,39 @@ const Tables = () => {
 	return (
 		<div className="flex flex-col items-center gap-4 px-5">
 			<div className={`w-full grid lg:grid-cols-2 gap-4`}>
-				<Search
+				<Search<RadioSelectorType>
 					title={`Search for ${radioStatus}`}
 					inputPlaceholder="Org name (i.e. laddercaster, staratlas, elementerra)"
-					inputValue={organizationValue}
+					inputValue={
+						radioStatus === RadioSelectorType.Organization
+							? values.organizationValue
+							: radioStatus === RadioSelectorType.Member
+							? values.memberName
+							: radioStatus === RadioSelectorType.Wallet
+							? values.wallet
+							: radioStatus === RadioSelectorType.Profile
+							? values.profile
+							: ""
+					}
 					onInputChange={(event) =>
 						handleInputChange(event.target.value)
 					}
 					radioValue={radioStatus}
-					changeRadioStatus={(value: RadioSelectorType) =>
-						setRadioStatus(value)
+					changeRadioStatus={setRadioStatus}
+					chips={
+						radioStatus === RadioSelectorType.Organization
+							? chips
+							: []
 					}
-					chips={chips}
-					onChipClick={(value) => handleInputChange(value)}
+					onChipClick={handleInputChange}
 				/>
 				{members && members.length > 0 && (
-					<Search
+					<Search<RadioSelectorType>
 						title="Search for member"
 						inputPlaceholder="Member name"
-						inputValue={memberName}
+						inputValue={values.memberName}
 						onInputChange={(event) =>
-							handleMemberNameChange(event.target.value)
+							handleInputChange(event.target.value)
 						}
 					/>
 				)}
