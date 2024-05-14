@@ -13,15 +13,18 @@ const MemberDetails = ({ member }: { member: SerializedData | null }) => {
 					value={member.member?.parsedData.name}
 				/>
 				<DetailsItem label="PublicKey" value={member.publicKey} link />
-				<DetailsItem
-					label="Organization"
-					value={member.member?.parsedData.organization}
-				/>
-				<DetailsItem
-					label="Treasury Count"
-					value={member.treasuryCount}
-				/>
+				<div className="grid grid-cols-2 gap-4">
+					<DetailsItem
+						label="Organization"
+						value={member.member?.parsedData.organization}
+					/>
+					<DetailsItem
+						label="Treasury Count"
+						value={member.treasuryCount}
+					/>
+				</div>
 			</MemberDetailSection>
+
 			<MemberDetailSection title="Profile">
 				<DetailsItem label="Name" value={member.profile?.name} />
 				<DetailsItem
@@ -32,7 +35,7 @@ const MemberDetails = ({ member }: { member: SerializedData | null }) => {
 			</MemberDetailSection>
 			<MemberDetailSection title="Wallet" lastSection>
 				<DetailsItem
-					label="Wallet"
+					label=""
 					value={member.profile?.authority.toBase58()}
 					link
 				/>

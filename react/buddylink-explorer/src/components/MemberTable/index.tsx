@@ -133,18 +133,27 @@ const MemberTable = () => {
 	}
 
 	return (
-		<div className="grid grid-cols-1 lg:grid-cols-[20fr,1fr,20fr] lg:grid-rows-1 gap-3 items-start justify-center gap-y-10">
-			<MemberTableContent
-				pageMembersParsed={pageMembersParsed}
-				handleNavigateMembers={handleNavigateMembers}
-				membersPage={membersPage}
-				dataLength={data.length}
-				setMember={setMember}
-				member={member}
-			/>
+		<div className="grid grid-cols-1 lg:grid-cols-[20fr,1fr,15fr] lg:grid-rows-1 gap-3 items-start justify-center gap-y-10 ">
+			<div className="max-w-[100vw] overflow-auto pb-4 flex  items-center justify-start w-full">
+				<MemberTableContent
+					pageMembersParsed={pageMembersParsed}
+					handleNavigateMembers={handleNavigateMembers}
+					membersPage={membersPage}
+					dataLength={data.length}
+					setMember={setMember}
+					member={member}
+				/>
+			</div>
+			<Divider />
 			<MemberDetails member={member} />
 		</div>
 	);
 };
 
 export default MemberTable;
+const Divider = () => (
+	<>
+		<span className="w-[1px] h-full bg-[#F6F7F7] hidden lg:block mx-auto"></span>
+		<span className="w-full h-[1px] bg-[#F6F7F7] block lg:hidden my-auto"></span>
+	</>
+);

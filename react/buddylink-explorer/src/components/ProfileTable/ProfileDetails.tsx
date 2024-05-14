@@ -10,7 +10,7 @@ const ProfileDetails = ({
 	referralsCount: { [key: string]: number };
 	uniqueOrganizations: string[];
 }) => (
-	<div className="flex flex-col px-3 gap-4">
+	<div className="flex flex-col px-3 gap-4 text-xs 2xl:text-base">
 		<div className="flex flex-col gap-2">
 			<h3 className="font-bold text-sm lg:text-base">Profile</h3>
 			<div className="grid grid-cols-2 gap-4">
@@ -51,7 +51,7 @@ const ProfileDetails = ({
 					</div>
 				))}
 			</div>
-			<span className="w-[95%] h-[1px] bg-white/70 mx-auto"></span>
+			<span className="w-[95%] h-[1px] bg-white/70 mx-auto my-3"></span>
 			<div className="flex flex-col gap-2">
 				<h3 className="font-bold text-sm lg:text-base">Referrals</h3>
 				<div className="flex gap-2 items-center justify-start w-full flex-wrap">

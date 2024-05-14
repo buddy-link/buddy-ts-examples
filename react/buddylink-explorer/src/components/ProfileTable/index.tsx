@@ -133,120 +133,124 @@ const ProfileTable = () => {
 	}
 
 	return (
-		<div className="grid grid-cols-1 lg:grid-cols-[20fr,1fr,20fr] lg:grid-rows-1 gap-3 items-start justify-center gap-y-10">
-			<table className="w-full text-xs lg:text-base">
-				<thead>
-					<tr className="text-sm lg:text-base">
-						<th align="left" className="px-6">
-							Profile
-						</th>
-						<th align="right" className="px-6">
-							PublicKey
-						</th>
-						<th align="right" className="px-6">
-							Wallet
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{pageProfilesParsed.map((item, index) => (
-						<tr
-							key={item.publicKey}
-							className={`py-2 px-6 hover:bg-primary hover:text-primary-dark cursor-pointer ${
-								index % 2 ? "bg-primary-dark" : ""
-							} ${
-								profiler &&
-								profiler.profiles[0].pubkey.toBase58() ===
-									item.publicKey
-									? "bg-primary/80"
-									: ""
-							}`}
-							onClick={async () => {
-								if (!item.profile) return;
-
-								if (
+		<div className="grid grid-cols-1 lg:grid-cols-[15fr,1fr,20fr] lg:grid-rows-1 gap-3 items-start justify-center gap-y-10 ">
+			<div className="overflow-auto max-w-[100vw] pb-4 flex items-center justify-start">
+				<table className=" w-full text-xs 2xl:text-base ">
+					<thead>
+						<tr className="text-sm 2xl:text-base">
+							<th align="left" className="px-5">
+								Profile
+							</th>
+							<th align="right" className="px-5">
+								PublicKey
+							</th>
+							<th align="right" className="px-5">
+								Wallet
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{pageProfilesParsed.map((item, index) => (
+							<tr
+								key={item.publicKey}
+								className={`py-2 px-5 hover:bg-primary hover:text-primary-dark cursor-pointer ${
+									index % 2 ? "bg-primary-dark" : ""
+								} ${
 									profiler &&
 									profiler.profiles[0].pubkey.toBase58() ===
 										item.publicKey
-								) {
-									setProfiler(null);
-								} else {
-									setIsSummaryLoading(true);
-									const summary = await getWalletSummary(
-										connection,
-										item.profile.authority,
-										{ profileName: item.profile.name }
-									);
-									setProfiler(summary as WalletDetails);
-									setIsSummaryLoading(false);
-								}
-							}}
-						>
-							<td align="left" className="py-2 px-6">
-								<div className="flex items-center justify-start gap-2 whitespace-nowrap">
-									{item.profile
-										? `${item.profile.name.slice(
-												0,
-												4
-										  )}...${item.profile.name.slice(-4)}`
-										: "-"}
-								</div>
-							</td>
-							<td align="right" className="py-2 px-6">
-								<div className="flex items-center justify-end gap-2">
-									{item.publicKey
-										? `${item.publicKey.slice(
-												0,
-												4
-										  )}...${item.publicKey.slice(-4)}`
-										: "-"}
-								</div>
-							</td>
-							<td align="right" className="py-2 px-6">
-								<div className="flex items-center justify-end gap-2">
-									{item.profile
-										? `${item.profile.authority
-												.toBase58()
-												.slice(
+										? "bg-primary/80"
+										: ""
+								}`}
+								onClick={async () => {
+									if (!item.profile) return;
+
+									if (
+										profiler &&
+										profiler.profiles[0].pubkey.toBase58() ===
+											item.publicKey
+									) {
+										setProfiler(null);
+									} else {
+										setIsSummaryLoading(true);
+										const summary = await getWalletSummary(
+											connection,
+											item.profile.authority,
+											{ profileName: item.profile.name }
+										);
+										setProfiler(summary as WalletDetails);
+										setIsSummaryLoading(false);
+									}
+								}}
+							>
+								<td align="left" className="py-2 px-5">
+									<div className="flex items-center justify-start gap-2 whitespace-nowrap">
+										{item.profile
+											? `${item.profile.name.slice(
 													0,
 													4
-												)}...${item.profile.authority
-												.toBase58()
-												.slice(-4)}`
-										: "-"}
+											  )}...${item.profile.name.slice(
+													-4
+											  )}`
+											: "-"}
+									</div>
+								</td>
+								<td align="right" className="py-2 px-5">
+									<div className="flex items-center justify-end gap-2">
+										{item.publicKey
+											? `${item.publicKey.slice(
+													0,
+													4
+											  )}...${item.publicKey.slice(-4)}`
+											: "-"}
+									</div>
+								</td>
+								<td align="right" className="py-2 px-5">
+									<div className="flex items-center justify-end gap-2">
+										{item.profile
+											? `${item.profile.authority
+													.toBase58()
+													.slice(
+														0,
+														4
+													)}...${item.profile.authority
+													.toBase58()
+													.slice(-4)}`
+											: "-"}
+									</div>
+								</td>
+							</tr>
+						))}
+						<tr>
+							<td colSpan={3} className="w-full">
+								<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
+									<button
+										className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
+										onClick={() =>
+											handleNavigateProfiles("prev")
+										}
+										disabled={profilesPage === 0}
+									>
+										Prev
+									</button>
+									<span>/</span>
+									<button
+										className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
+										onClick={() =>
+											handleNavigateProfiles("next")
+										}
+										disabled={
+											data.length < MEMBER_ITEMS_PER_PAGE
+										}
+									>
+										Next
+									</button>
 								</div>
 							</td>
 						</tr>
-					))}
-					<tr>
-						<td colSpan={2} className="w-full">
-							<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
-								<button
-									className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
-									onClick={() =>
-										handleNavigateProfiles("prev")
-									}
-									disabled={profilesPage === 0}
-								>
-									Prev
-								</button>
-								<span>/</span>
-								<button
-									className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"
-									onClick={() =>
-										handleNavigateProfiles("next")
-									}
-									disabled={
-										data.length < MEMBER_ITEMS_PER_PAGE
-									}
-								>
-									Next
-								</button>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 			<span className="w-[1px] h-full bg-[#F6F7F7] hidden lg:block mx-auto"></span>
 			{isSummaryLoading ? (
 				<div className="p-4 h-36 flex items-center justify-center">

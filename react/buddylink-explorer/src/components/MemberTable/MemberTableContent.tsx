@@ -18,19 +18,19 @@ const MemberTableContent = ({
 	member: SerializedData | null;
 }) => (
 	<>
-		<table className="w-full text-xs lg:text-base">
+		<table className="text-xs  2xl:text-base w-full">
 			<thead>
 				<tr className="text-sm lg:text-base">
-					<th align="left" className="px-6">
+					<th align="left" className="px-5">
 						Member
 					</th>
-					<th align="right" className="px-6">
+					<th align="right" className="px-5">
 						Organization
 					</th>
-					<th align="right" className="px-6">
+					<th align="right" className="px-5">
 						Profile
 					</th>
-					<th align="right" className="px-6">
+					<th align="right" className="px-5">
 						Wallet
 					</th>
 				</tr>
@@ -39,7 +39,7 @@ const MemberTableContent = ({
 				{pageMembersParsed.map((item, index) => (
 					<tr
 						key={item.publicKey}
-						className={`py-2 px-6 hover:bg-primary hover:text-primary-dark cursor-pointer ${
+						className={`py-2 px-5 hover:bg-primary hover:text-primary-dark cursor-pointer ${
 							index % 2 ? "bg-primary-dark" : ""
 						} ${
 							member?.publicKey === item.publicKey
@@ -48,7 +48,7 @@ const MemberTableContent = ({
 						}`}
 						onClick={() => setMember(item)}
 					>
-						<td align="left" className="py-2 px-6">
+						<td align="left" className="py-2 px-5">
 							<div className="flex items-center justify-start gap-2 whitespace-nowrap">
 								{item.member
 									? `${item.member.parsedData.name.slice(
@@ -60,7 +60,7 @@ const MemberTableContent = ({
 									: "-"}
 							</div>
 						</td>
-						<td align="right" className="py-2 px-6">
+						<td align="right" className="py-2 px-5">
 							<div className="flex items-center justify-end gap-2 whitespace-nowrap">
 								{item.member
 									? `${item.member.parsedData.organization.slice(
@@ -72,7 +72,7 @@ const MemberTableContent = ({
 									: "-"}
 							</div>
 						</td>
-						<td align="right" className="py-2 px-6">
+						<td align="right" className="py-2 px-5">
 							<div className="flex items-center justify-end gap-2 whitespace-nowrap">
 								{item.profile
 									? `${item.profile.name.slice(
@@ -82,7 +82,7 @@ const MemberTableContent = ({
 									: "-"}
 							</div>
 						</td>
-						<td align="right" className="py-2 px-6">
+						<td align="right" className="py-2 px-5">
 							<div className="flex items-center justify-center gap-2">
 								{item.profile
 									? `${item.profile.authority
