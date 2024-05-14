@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "postinstall": "cd .. cd .. && husky install next/sponsaru/.husky",
-    "lint": "next lint --no-cache",
+    "lint": "next lint-staged --no-cache",
     "lint:fix": "next lint --no-cache --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
