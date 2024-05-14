@@ -1,0 +1,13 @@
+{
+	"private": true,
+	"workspaces": ["next/*"],
+	"scripts": {
+		"lint": "yarn workspace sponsaru lint",
+		"lint:fix": "yarn workspace sponsaru lint:fix",
+		"type-check": "yarn workspace sponsaru type-check",
+		"postinstall": "husky install"
+	},
+	"devDependencies": {
+		"husky": "^9.0.11"
+	}
+}
