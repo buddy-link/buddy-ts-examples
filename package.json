@@ -1,6 +1,8 @@
 {
 	"private": true,
-	"workspaces": ["next/*"],
+	"workspaces": [
+		"next/*"
+	],
 	"scripts": {
 		"lint": "yarn workspace sponsaru lint",
 		"lint:fix": "yarn workspace sponsaru lint:fix",
