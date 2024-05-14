@@ -6,24 +6,26 @@ const useSearch = () => {
 	const [organizationValue, setOrganizationValue] =
 		useBuddyState("ORGANIZATION_NAME");
 	const [memberName, setMemberName] = useBuddyState("MEMBER_NAME");
-	const [wallet, setWallet] = useBuddyState("WALLET_NAME");
 	const [profile, setProfile] = useBuddyState("PROFILE_NAME");
+	const [orgMember, setOrgMember] = useBuddyState("ORG_MEMBER_NAME");
 
 	const [searchTerm, setSearchTerm] = useState({
 		organizationValue,
 		memberName,
-		wallet,
+
 		profile,
+		orgMember,
 	});
 
 	const setters = useMemo(
 		() => ({
 			organizationValue: setOrganizationValue,
 			memberName: setMemberName,
-			wallet: setWallet,
+
 			profile: setProfile,
+			orgMember: setOrgMember,
 		}),
-		[setOrganizationValue, setMemberName, setWallet, setProfile]
+		[setOrganizationValue, setMemberName, setProfile, setOrgMember]
 	);
 
 	const debouncedUpdate = useRef(

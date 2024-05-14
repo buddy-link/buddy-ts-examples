@@ -76,6 +76,20 @@ export type TreasuryData = {
 	owners: Owner[];
 };
 
+export interface OrganizationData {
+	authority: string;
+	bump: number;
+	dateCreated: number;
+	name: string;
+	mainTokenMint: string;
+	enforceWalletUniqueness: boolean;
+	ambassador: string;
+	ambassadorShareKeptInBps: number;
+	accountVersion: number;
+	allowMultiAttribution: boolean;
+	volumeRequiredForRewards: string;
+}
+
 export type MemberAccountInfo = {
 	account: Account;
 	pubkey: PublicKey;
@@ -100,11 +114,16 @@ export type TreasuryAccountInfo = {
 	parsedData: TreasuryData;
 };
 
+export type OrganizationAccountInfo = {
+	account: Account;
+	pubkey: PublicKey;
+	parsedData: OrganizationData;
+};
+
 export enum RadioSelectorType {
 	Organization = "Organization",
 	Member = "Member",
-	Wallet = "Wallet",
-	Profile = "Profile",
+	Profile = "Profile/Wallet",
 }
 
 export type SerializedData = {

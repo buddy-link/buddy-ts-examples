@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Search from "../../components/Search";
 import { useBuddyState, getOrganizationAccounts } from "buddy.link";
 import useSearch from "./useSearch";
-import { RadioSelectorType } from "./types";
+import { OrganizationAccountInfo, RadioSelectorType } from "./types";
 import TableProvider from "../../components/TableProvider";
 import { useConnection } from "@solana/wallet-adapter-react";
 
@@ -30,9 +30,7 @@ const Tables = () => {
 				case RadioSelectorType.Member:
 					handleChange("memberName", value);
 					break;
-				case RadioSelectorType.Wallet:
-					handleChange("wallet", value);
-					break;
+
 				case RadioSelectorType.Profile:
 					handleChange("profile", value);
 					break;
@@ -46,9 +44,10 @@ const Tables = () => {
 	useEffect(() => {
 		const fetchOrgsName = async () => {
 			const orgs = await getOrganizationAccounts(connection);
-			const orgNamesArray = orgs.map((org) => {
-				//eslint-disable-next-line
-				//@ts-ignore
+
+			console.log(orgs);
+
+			const orgNamesArray = orgs.map((org: OrganizationAccountInfo) => {
 				const orgName = org.parsedData.name;
 				return orgName;
 			});
@@ -69,8 +68,6 @@ const Tables = () => {
 							? values.organizationValue
 							: radioStatus === RadioSelectorType.Member
 							? values.memberName
-							: radioStatus === RadioSelectorType.Wallet
-							? values.wallet
 							: radioStatus === RadioSelectorType.Profile
 							? values.profile
 							: ""
@@ -91,9 +88,9 @@ const Tables = () => {
 					<Search<RadioSelectorType>
 						title="Search for member"
 						inputPlaceholder="Member name"
-						inputValue={values.memberName}
+						inputValue={values.orgMember}
 						onInputChange={(event) =>
-							handleInputChange(event.target.value)
+							handleChange("orgMember", event.target.value)
 						}
 					/>
 				)}

@@ -8,38 +8,44 @@ import {
 } from "buddy.link";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PublicKey } from "@solana/web3.js";
 
 import { MEMBER_ITEMS_PER_PAGE } from "../../lib/constants";
-import { serializedMemberType } from "./types";
+import {
+	MemberAccountInfo,
+	ProfileData,
+	SerializedData,
+	TreasuryData,
+} from "./types";
 import { OrganizationTableRow } from "../../components/types";
 import { useConnection } from "@solana/wallet-adapter-react";
 
 const useData = () => {
 	const [organization] = useBuddyState("BUDDY_ORGANIZATION");
 	const [members] = useBuddyState("BUDDY_MEMBERS");
-	const [memberName] = useBuddyState("MEMBER_NAME");
+	const [orgMember] = useBuddyState("ORG_MEMBER_NAME");
 	const [loadingSerializer, setLoadingSerializer] = useState(true);
 
 	const [membersPage, setMembersPage] = useState(0);
 	const [pageMembersParsed, setPageMembersParsed] = useState<
-		serializedMemberType[]
+		SerializedData[]
 	>([]);
 
 	const { connection } = useConnection();
 
 	const serializeMember = useCallback(
 		(
-			profile: unknown,
-			member: unknown,
-			treasury: unknown
-		): serializedMemberType => {
+			profile: ProfileData,
+			member: MemberAccountInfo & { publicKey: PublicKey },
+			treasury: TreasuryData[]
+		) => {
 			return {
-				profile: profile || "-",
-				// @ts-expect-error types still WIP
-				member: member?.account || "",
-				// @ts-expect-error types still WIP
+				profile: profile,
+
+				member: member?.account,
+
 				treasuryCount: treasury.length,
-				// @ts-expect-error types still WIP
+
 				publicKey: member?.publicKey.toBase58(),
 			};
 		},
@@ -50,19 +56,23 @@ const useData = () => {
 		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
 		const pageMembers = members
 			?.slice(startIndex, startIndex + MEMBER_ITEMS_PER_PAGE)
-			.filter((item: unknown) => {
-				const searchRegex = new RegExp(`.*${memberName}.*`, "i");
-				// @ts-expect-error types still WIP
-				return searchRegex.test(item?.account?.name);
+			.filter((item: { account: { name: string; profile: string } }) => {
+				const searchRegex = new RegExp(`.*${orgMember}.*`, "i");
+				const nameResult = searchRegex.test(item?.account?.name);
+
+				return nameResult;
 			});
 
-		const getTreasury = async (): Promise<serializedMemberType[]> => {
+		console.log("pageMembers: ", pageMembers);
+
+		const getTreasury = async (): Promise<SerializedData[]> => {
 			setLoadingSerializer(true);
 			const memberDataPromises = pageMembers.map(
-				async (member: unknown) => {
+				async (
+					member: MemberAccountInfo & { publicKey: PublicKey }
+				) => {
 					// Fetch owner account info and unwrap in parallel
 					const ownerPromise = connection.getAccountInfo(
-						// @ts-expect-error types still WIP
 						member?.account?.owner
 					);
 					return ownerPromise.then((owner) => {
@@ -95,8 +105,6 @@ const useData = () => {
 										treasury
 									);
 								});
-
-								// Serialize the member data
 							});
 					});
 				}
@@ -104,11 +112,13 @@ const useData = () => {
 
 			try {
 				// Wait for all promises to resolve
-				const membersw = await Promise.all(memberDataPromises);
+				const Response = await Promise.all(memberDataPromises);
+
+				console.log("Response: ", Response);
 
 				// Update page members parsed
-				setPageMembersParsed(membersw);
-				return membersw;
+				setPageMembersParsed(Response);
+				return Response;
 			} catch (error) {
 				console.error("Error fetching treasury data:", error);
 				throw error; // Propagate the error
@@ -120,7 +130,7 @@ const useData = () => {
 		getTreasury();
 
 		console.log("members: ", members);
-	}, [connection, memberName, members, membersPage, serializeMember]);
+	}, [connection, orgMember, members, membersPage, serializeMember]);
 
 	const organizationData = useMemo<OrganizationTableRow[]>(
 		() => [
@@ -174,7 +184,7 @@ const useData = () => {
 		[organization, members]
 	);
 
-	const membersData = useMemo<serializedMemberType[]>(() => {
+	const membersData = useMemo<SerializedData[]>(() => {
 		if (!members?.length) return [];
 
 		// if (searchMemberName.length) {

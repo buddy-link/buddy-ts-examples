@@ -20,6 +20,7 @@ const ProfileTable = () => {
 	const [data, setData] = useState<[]>([]);
 	const [profiler, setProfiler] = useState<WalletDetails | null>(null);
 	const [loadingSerializer, setLoadingSerializer] = useState(true);
+	const [isSummaryLoading, setIsSummaryLoading] = useState(false);
 	const [profileName] = useBuddyState("PROFILE_NAME");
 
 	const [profilesPage, setProfilesPage] = useState(0);
@@ -32,8 +33,6 @@ const ProfileTable = () => {
 			setData(data as []);
 		});
 	}, [connection]);
-
-	console.log(data);
 
 	const handleNavigateProfiles = useCallback((type: "prev" | "next") => {
 		if (type === "prev") {
@@ -60,6 +59,7 @@ const ProfileTable = () => {
 
 	const referralsCount = useMemo(
 		() =>
+			profiler &&
 			profiler !== null &&
 			profiler.referrals.reduce(
 				(acc: { [key: string]: number }, curr) => {
@@ -76,7 +76,9 @@ const ProfileTable = () => {
 		[profiler]
 	);
 
-	const uniqueOrganizations = Object.keys(referralsCount);
+	const uniqueOrganizations = referralsCount
+		? Object.keys(referralsCount)
+		: [];
 
 	useEffect(() => {
 		const startIndex = profilesPage * MEMBER_ITEMS_PER_PAGE;
@@ -87,7 +89,10 @@ const ProfileTable = () => {
 			const publicKeyMatch = searchRegex.test(
 				item?.pubkey?.toBase58() || ""
 			);
-			return nameMatch || publicKeyMatch;
+			const walletMatch = searchRegex.test(
+				item?.parsedData?.authority?.toBase58() || ""
+			);
+			return nameMatch || publicKeyMatch || walletMatch;
 		});
 
 		const pageProfiles = filteredProfiles.slice(
@@ -127,7 +132,7 @@ const ProfileTable = () => {
 		getProfiles();
 	}, [connection, data, profilesPage, profileName, serializeProfile]);
 
-	if (loadingSerializer) {
+	if (loadingSerializer || !data.length) {
 		return (
 			<div className="p-4 h-36 flex items-center justify-center">
 				<Loader />
@@ -173,17 +178,21 @@ const ProfileTable = () => {
 									) {
 										return setProfiler(null);
 									}
-									const orgs = await getWalletSummary(
+
+									setIsSummaryLoading(true);
+
+									getWalletSummary(
 										connection,
 										item.profile.authority,
 										{ profileName: item.profile.name }
-									);
+									).then((summary) => {
+										setProfiler(
+											summary as unknown as WalletDetails //TODO: this is a workaround, theres a type mismatch to be fixed
+										);
+										return setIsSummaryLoading(false);
+									});
 
-									console.log(orgs);
-
-									return setProfiler(
-										orgs as unknown as WalletDetails //TODO: this is a workaround, theres a type mismatch to be fixed
-									);
+									return;
 								}}
 							>
 								<td align="left" className={`py-2 px-6 `}>
@@ -263,7 +272,11 @@ const ProfileTable = () => {
 				</tbody>
 			</table>
 			<span className="w-[1px] h-full bg-[#F6F7F7] hidden lg:block mx-auto"></span>
-			{profiler && (
+			{isSummaryLoading ? (
+				<div className="p-4 h-36 flex items-center justify-center">
+					<Loader />
+				</div>
+			) : profiler ? (
 				<div className="flex flex-col px-3 gap-4">
 					<div className="flex flex-col gap-2 ">
 						<h3 className="font-bold text-sm lg:text-base">
@@ -370,7 +383,7 @@ const ProfileTable = () => {
 						</div>
 					</div>
 				</div>
-			)}
+			) : null}
 		</div>
 	);
 };

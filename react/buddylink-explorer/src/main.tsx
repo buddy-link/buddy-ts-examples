@@ -14,8 +14,8 @@ initBuddyState({
 	...{
 		ORGANIZATION_NAME: "",
 		MEMBER_NAME: "",
-		WALLET_NAME: "",
 		PROFILE_NAME: "",
+		ORG_MEMBER_NAME: "",
 	},
 });
 
