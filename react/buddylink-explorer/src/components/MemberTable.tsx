@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useConnection } from "@solana/wallet-adapter-react";
 import {
 	getMemberAccounts,
@@ -6,20 +7,25 @@ import {
 	useBuddyState,
 } from "buddy.link";
 import { useCallback, useEffect, useState } from "react";
-import { serializedMemberType } from "../ui/Tables/types";
+import {
+	MemberAccountInfo,
+	Owner,
+	SerializedData,
+	TreasuryData,
+} from "../ui/Tables/types";
 import { MEMBER_ITEMS_PER_PAGE } from "../lib/constants";
 import Loader from "./Loader";
 
 const MemberTable = () => {
 	const { connection } = useConnection();
 	const [data, setData] = useState<[]>([]);
-	const [member, setMember] = useState<serializedMemberType | null>(null);
+	const [member, setMember] = useState<SerializedData | null>(null);
 	const [loadingSerializer, setLoadingSerializer] = useState(true);
 	const [memberName] = useBuddyState("MEMBER_NAME");
 
 	const [membersPage, setMembersPage] = useState(0);
 	const [pageMembersParsed, setPageMembersParsed] = useState<
-		serializedMemberType[]
+		SerializedData[]
 	>([]);
 
 	useEffect(() => {
@@ -38,16 +44,16 @@ const MemberTable = () => {
 
 	const serializeMember = useCallback(
 		(
-			profile: unknown,
-			member: unknown,
-			treasury: unknown,
+			profile: ReturnType<typeof unwrapProfileAccountData>,
+			member: MemberAccountInfo,
+			treasury: TreasuryData,
 			profilePubkey: string
-		): serializedMemberType => {
+		) => {
 			return {
 				profile,
 				member,
 				treasuryCount: treasury.owners.filter(
-					(owner: unknown) => owner?.share > 0
+					(owner: Owner) => owner?.share > 0
 				).length,
 				publicKey: member?.pubkey.toBase58(),
 				profilePubkey,
@@ -60,7 +66,7 @@ const MemberTable = () => {
 		const startIndex = membersPage * MEMBER_ITEMS_PER_PAGE;
 		const searchRegex = new RegExp(`.*${memberName}.*`, "i");
 
-		const filteredMembers = data?.filter((item: any) => {
+		const filteredMembers = data?.filter((item: MemberAccountInfo) => {
 			const nameMatch = searchRegex.test(item?.parsedData?.name || "");
 			const publicKeyMatch = searchRegex.test(
 				item?.pubkey?.toBase58() || ""
@@ -73,46 +79,50 @@ const MemberTable = () => {
 			startIndex + MEMBER_ITEMS_PER_PAGE
 		);
 
-		const getTreasury = async (): Promise<serializedMemberType[]> => {
+		const getTreasury = async () => {
 			setLoadingSerializer(true);
-			const memberDataPromises = pageMembers.map(async (member: any) => {
-				const ownerPromise = connection.getAccountInfo(
-					member?.parsedData?.owner
-				);
+			const memberDataPromises = pageMembers.map(
+				async (member: MemberAccountInfo) => {
+					const ownerPromise = connection.getAccountInfo(
+						member?.parsedData?.owner
+					);
 
-				return ownerPromise.then((owner) => {
-					if (!owner) {
-						throw new Error("Owner not found");
-					}
+					return ownerPromise.then((owner) => {
+						if (!owner) {
+							throw new Error("Owner not found");
+						}
 
-					const ownerTreasury = unwrapTreasuryAccountData(owner.data);
+						const ownerTreasury = unwrapTreasuryAccountData(
+							owner.data
+						);
 
-					return connection
-						.getAccountInfo(ownerTreasury.owners[0].owner)
-						.then((profileData) => {
-							if (!profileData) {
-								throw new Error("Profile data not found");
-							}
+						return connection
+							.getAccountInfo(ownerTreasury.owners[0].owner)
+							.then((profileData) => {
+								if (!profileData) {
+									throw new Error("Profile data not found");
+								}
 
-							const profile = unwrapProfileAccountData(
-								profileData.data
-							);
-							console.log("profile", profile);
+								const profile = unwrapProfileAccountData(
+									profileData.data
+								);
+								console.log("profile", profile);
 
-							return serializeMember(
-								profile,
-								member,
-								ownerTreasury,
-								ownerTreasury.owners[0].owner.toBase58()
-							);
-						});
-				});
-			});
+								return serializeMember(
+									profile,
+									member,
+									ownerTreasury,
+									ownerTreasury.owners[0].owner.toBase58()
+								);
+							});
+					});
+				}
+			);
 
 			try {
-				const membersw = await Promise.all(memberDataPromises);
-				setPageMembersParsed(membersw);
-				return membersw;
+				const response = await Promise.all(memberDataPromises);
+				setPageMembersParsed(response as unknown as SerializedData[]); //TODO: this is a workaround, theres a type mismatch to be fixed
+				return response;
 			} catch (error) {
 				console.error("Error fetching treasury data:", error);
 				throw error;
@@ -165,62 +175,50 @@ const MemberTable = () => {
 						>
 							<td align="left" className={`py-2 px-6 `}>
 								<>
-									<div className="flex  items-center justify-start gap-2 whitespace-nowrap">
-										{item.member.parsedData.name.length > 1
+									<div className="flex items-center justify-start gap-2 whitespace-nowrap">
+										{item.member
 											? `${item.member.parsedData.name.slice(
 													0,
 													4
 											  )}... ${item.member.parsedData.name.slice(
 													-4
 											  )}`
-											: item.member.parsedData.name}
+											: "-"}
 									</div>
-									{/* <div className="hidden xl:flex items-center justify-center gap-2">
-										{item.member.parsedData.name}
-									</div> */}
 								</>
 							</td>
 							<td align="right" className={`py-2 px-6 `}>
 								<>
 									<div className="flex  items-center justify-end gap-2 whitespace-nowrap">
-										{item.member.parsedData.organization
-											.length > 1
+										{item.member
 											? `${item.member.parsedData.organization.slice(
 													0,
 													4
 											  )}...${item.member.parsedData.organization.slice(
 													-4
 											  )}`
-											: item.member.parsedData
-													.organization}
+											: "-"}
 									</div>
-									{/* <div className="hidden xl:flex items-center justify-end gap-2">
-										{item.member.parsedData.organization}
-									</div> */}
 								</>
 							</td>
 							<td align="right" className={`py-2 px-6 `}>
 								<>
 									<div className="flex  items-center justify-end gap-2 whitespace-nowrap">
-										{item.profile.name.length > 1
+										{item.profile
 											? `${item.profile.name.slice(
 													0,
 													4
 											  )}...${item.profile.name.slice(
 													-4
 											  )}`
-											: item.profile.name}
+											: "-"}
 									</div>
-									{/* <div className="hidden xl:flex items-center justify-center gap-2">
-										{item.profile.name}
-									</div> */}
 								</>
 							</td>
 							<td align="right" className={`py-2 px-6 `}>
 								<>
 									<div className="flex  items-center justify-center gap-2">
-										{item.profile.authority.toBase58()
-											.length > 1
+										{item.profile
 											? `${item.profile.authority
 													.toBase58()
 													.slice(
@@ -229,11 +227,8 @@ const MemberTable = () => {
 													)}...${item.profile.authority
 													.toBase58()
 													.slice(-4)}`
-											: item.profile.authority.toBase58()}
+											: "-"}
 									</div>
-									{/* <div className="hidden xl:flex items-center justify-center gap-2">
-										{item.profile.authority.toBase58()}
-									</div> */}
 								</>
 							</td>
 						</tr>
@@ -279,7 +274,7 @@ const MemberTable = () => {
 								name:
 							</span>
 							<span className="bg-primary-dark px-2 py-[1px] rounded-lg">
-								{member.member.parsedData.name}
+								{member.member?.parsedData.name ?? "-"}
 							</span>
 						</div>
 						<div className="flex flex-col">
@@ -306,7 +301,8 @@ const MemberTable = () => {
 									Organization:
 								</span>
 								<span className="bg-primary-dark px-2 py-[1px] rounded-lg">
-									{member.member.parsedData.organization}
+									{member.member?.parsedData.organization ??
+										"-"}
 								</span>
 							</div>
 							<div className=" flex flex-col">
@@ -329,7 +325,7 @@ const MemberTable = () => {
 								name:
 							</span>
 							<span className="bg-primary-dark px-2 py-[1px] rounded-lg">
-								{member.profile.name}
+								{member.profile?.name ?? "-"}
 							</span>
 						</div>
 						<div className=" flex flex-col">
@@ -359,16 +355,22 @@ const MemberTable = () => {
 
 						<a
 							className="bg-primary-dark px-2 py-[1px] rounded-lg flex items-center justify-center gap-2 hover:bg-primary hover:text-primary-dark"
-							href={`https://solscan.io/account/${member.profile.authority.toBase58()}`}
+							href={
+								member.profile
+									? `https://solscan.io/account/${member.profile.authority.toBase58()}`
+									: "#"
+							}
 							rel="noreferrer"
 							target="_blank"
 						>
-							{member.profile.authority.toBase58()}
-							<img
-								src="/solscan-logo.png"
-								alt="Solscan"
-								className="w-4 h-4"
-							/>
+							{member.profile?.authority.toBase58() ?? "-"}
+							{member.profile && (
+								<img
+									src="/solscan-logo.png"
+									alt="Solscan"
+									className="w-4 h-4"
+								/>
+							)}
 						</a>
 					</div>
 				</div>

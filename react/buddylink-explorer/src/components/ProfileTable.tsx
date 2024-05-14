@@ -6,20 +6,25 @@ import {
 	useBuddyState,
 } from "buddy.link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { serializedMemberType } from "../ui/Tables/types";
+import {
+	ProfileAccountInfo,
+	ProfileData,
+	WalletDetails,
+	SerializedData,
+} from "../ui/Tables/types";
 import { MEMBER_ITEMS_PER_PAGE } from "../lib/constants";
 import Loader from "./Loader";
 
 const ProfileTable = () => {
 	const { connection } = useConnection();
 	const [data, setData] = useState<[]>([]);
-	const [profiler, setProfiler] = useState<serializedMemberType | null>(null);
+	const [profiler, setProfiler] = useState<WalletDetails | null>(null);
 	const [loadingSerializer, setLoadingSerializer] = useState(true);
 	const [profileName] = useBuddyState("PROFILE_NAME");
 
 	const [profilesPage, setProfilesPage] = useState(0);
 	const [pageProfilesParsed, setPageProfilesParsed] = useState<
-		serializedMemberType[]
+		SerializedData[]
 	>([]);
 
 	useEffect(() => {
@@ -42,7 +47,7 @@ const ProfileTable = () => {
 		async (
 			profileData: unknown,
 			profilePubkey: string
-		): Promise<serializedMemberType> => {
+		): Promise<SerializedData> => {
 			const profile = unwrapProfileAccountData(profileData);
 
 			return {
@@ -56,15 +61,18 @@ const ProfileTable = () => {
 	const referralsCount = useMemo(
 		() =>
 			profiler !== null &&
-			profiler.referrals.reduce((acc, curr) => {
-				const organization = curr.parsedData.organization;
-				if (acc[organization]) {
-					acc[organization] += 1;
-				} else {
-					acc[organization] = 1;
-				}
-				return acc;
-			}, {}),
+			profiler.referrals.reduce(
+				(acc: { [key: string]: number }, curr) => {
+					const organization = curr.parsedData.organization;
+					if (acc[organization]) {
+						acc[organization] += 1;
+					} else {
+						acc[organization] = 1;
+					}
+					return acc;
+				},
+				{}
+			),
 		[profiler]
 	);
 
@@ -74,7 +82,7 @@ const ProfileTable = () => {
 		const startIndex = profilesPage * MEMBER_ITEMS_PER_PAGE;
 		const searchRegex = new RegExp(`.*${profileName}.*`, "i");
 
-		const filteredProfiles = data?.filter((item: any) => {
+		const filteredProfiles = data?.filter((item: ProfileAccountInfo) => {
 			const nameMatch = searchRegex.test(item?.parsedData?.name || "");
 			const publicKeyMatch = searchRegex.test(
 				item?.pubkey?.toBase58() || ""
@@ -87,12 +95,12 @@ const ProfileTable = () => {
 			startIndex + MEMBER_ITEMS_PER_PAGE
 		);
 
-		const getProfiles = async (): Promise<serializedMemberType[]> => {
+		const getProfiles = async (): Promise<SerializedData[]> => {
 			setLoadingSerializer(true);
 			const profileDataPromises = pageProfiles.map(
-				async (profile: any) => {
+				async (profile: ProfileAccountInfo) => {
 					const profileData = await connection.getAccountInfo(
-						profile?.pubkey
+						profile.pubkey
 					);
 					if (!profileData) {
 						throw new Error("Profile data not found");
@@ -144,65 +152,69 @@ const ProfileTable = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{pageProfilesParsed.map((item, index) => (
-						<tr
-							key={item.publicKey}
-							className={`py-2 px-6 hover:bg-primary hover:text-primary-dark cursor-pointer ${
-								index % 2 ? "bg-primary-dark" : ""
-							} ${
-								profiler &&
-								profiler.profiles[0].pubkey.toBase58() ===
-									item.publicKey &&
-								`bg-primary/80`
-							}`}
-							onClick={async () => {
-								const orgs = await getWalletSummary(
-									connection,
-									item.profile.authority,
-									{ profileName: item.profile.name }
-								);
+					{pageProfilesParsed.map(
+						(item: SerializedData, index: number) => (
+							<tr
+								key={item.publicKey}
+								className={`py-2 px-6 hover:bg-primary hover:text-primary-dark cursor-pointer ${
+									index % 2 ? "bg-primary-dark" : ""
+								} ${
+									profiler &&
+									profiler.profiles[0].pubkey.toBase58() ===
+										item.publicKey &&
+									`bg-primary/80`
+								}`}
+								onClick={async () => {
+									const orgs = await getWalletSummary(
+										connection,
+										item.profile.authority,
+										{ profileName: item.profile.name }
+									);
 
-								console.log(orgs);
+									console.log(orgs);
 
-								return setProfiler(orgs);
-							}}
-						>
-							<td align="left" className={`py-2 px-6 `}>
-								<>
-									<div className="flex items-center justify-start gap-2 whitespace-nowrap">
-										{`${item.profile.name.slice(
-											0,
-											4
-										)}...${item.profile.name.slice(-4)}`}
-									</div>
-								</>
-							</td>
-							<td align="right" className={`py-2 px-6 `}>
-								<>
-									<div className="flex items-center justify-end gap-2">
-										{`${item.publicKey.slice(
-											0,
-											4
-										)}...${item.publicKey.slice(-4)}`}
-									</div>
-								</>
-							</td>
-							<td align="right" className={`py-2 px-6 `}>
-								<>
-									<div className="flex items-center justify-end gap-2">
-										{`${item.profile.authority
-											.toBase58()
-											.slice(
+									return setProfiler(orgs);
+								}}
+							>
+								<td align="left" className={`py-2 px-6 `}>
+									<>
+										<div className="flex items-center justify-start gap-2 whitespace-nowrap">
+											{`${item.profile.name.slice(
 												0,
 												4
-											)}...${item.profile.authority
-											.toBase58()
-											.slice(-4)}`}
-									</div>
-								</>
-							</td>
-						</tr>
-					))}
+											)}...${item.profile.name.slice(
+												-4
+											)}`}
+										</div>
+									</>
+								</td>
+								<td align="right" className={`py-2 px-6 `}>
+									<>
+										<div className="flex items-center justify-end gap-2">
+											{`${item.publicKey.slice(
+												0,
+												4
+											)}...${item.publicKey.slice(-4)}`}
+										</div>
+									</>
+								</td>
+								<td align="right" className={`py-2 px-6 `}>
+									<>
+										<div className="flex items-center justify-end gap-2">
+											{`${item.profile.authority
+												.toBase58()
+												.slice(
+													0,
+													4
+												)}...${item.profile.authority
+												.toBase58()
+												.slice(-4)}`}
+										</div>
+									</>
+								</td>
+							</tr>
+						)
+					)}
 					<tr className="">
 						<td className="w-full " colSpan={2}>
 							<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
