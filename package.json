@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "husky install",
-    "lint": "next lint-staged --no-cache",
-    "lint:fix": "next lint --no-cache --fix",
+    "lint": "tsc --noEmit && lint-staged",
+    "lint:fix": "lint --no-cache --fix",
     "type-check": "tsc --noEmit",
     "lint-staged": "lint-staged"
   },
