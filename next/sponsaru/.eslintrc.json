@@ -15,8 +15,17 @@
     "react/react-in-jsx-scope": "off",
     "react/no-unescaped-entities": "off",
     "@next/next/no-img-element": "off",
-    "react/no-unknown-property": ["off"],
+    "react/no-unknown-property": "off",
     "react/jsx-no-useless-fragment": "off",
-    "unused-imports/no-unused-imports-ts": "warn"
+    "unused-imports/no-unused-imports-ts": "warn",
+    "prettier/prettier": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "linterOptions": {
+    "reportUnusedDisableDirectives": true
   }
 }
