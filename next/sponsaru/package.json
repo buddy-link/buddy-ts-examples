@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": " cd .. cd .. && husky next/sponsaru/.husky",
+    "postinstall": "cd .. cd .. && husky install next/sponsaru/.husky",
     "lint": "next lint --no-cache",
     "lint:fix": "next lint --no-cache --fix",
     "type-check": "tsc --noEmit"
@@ -44,5 +44,11 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "next lint --fix --file",
+      "tsc --noEmit"
+    ]
   }
 }

@@ -25,7 +25,12 @@
       "version": "detect"
     }
   },
-  "linterOptions": {
-    "reportUnusedDisableDirectives": true
-  }
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "no-undef": "off"
+      }
+    }
+  ]
 }
