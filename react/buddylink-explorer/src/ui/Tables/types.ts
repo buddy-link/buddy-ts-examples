@@ -109,7 +109,7 @@ export enum RadioSelectorType {
 
 export type SerializedData = {
 	profile?: ProfileData;
-	member?: MemberAccountInfo;
+	member?: MemberAccountInfo & MemberData;
 	treasury?: TreasuryData;
 	treasuryCount?: number;
 	publicKey?: string;

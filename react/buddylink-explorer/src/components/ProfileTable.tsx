@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useConnection } from "@solana/wallet-adapter-react";
 import {
 	getProfileAccounts,
@@ -8,7 +9,6 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	ProfileAccountInfo,
-	ProfileData,
 	WalletDetails,
 	SerializedData,
 } from "../ui/Tables/types";
@@ -165,6 +165,14 @@ const ProfileTable = () => {
 									`bg-primary/80`
 								}`}
 								onClick={async () => {
+									if (!item.profile) return null;
+									if (
+										profiler &&
+										profiler.profiles[0].pubkey.toBase58() ===
+											item.publicKey
+									) {
+										return setProfiler(null);
+									}
 									const orgs = await getWalletSummary(
 										connection,
 										item.profile.authority,
@@ -173,42 +181,52 @@ const ProfileTable = () => {
 
 									console.log(orgs);
 
-									return setProfiler(orgs);
+									return setProfiler(
+										orgs as unknown as WalletDetails //TODO: this is a workaround, theres a type mismatch to be fixed
+									);
 								}}
 							>
 								<td align="left" className={`py-2 px-6 `}>
 									<>
 										<div className="flex items-center justify-start gap-2 whitespace-nowrap">
-											{`${item.profile.name.slice(
-												0,
-												4
-											)}...${item.profile.name.slice(
-												-4
-											)}`}
+											{item.profile
+												? `${item.profile.name.slice(
+														0,
+														4
+												  )}...${item.profile.name.slice(
+														-4
+												  )}`
+												: "-"}
 										</div>
 									</>
 								</td>
 								<td align="right" className={`py-2 px-6 `}>
 									<>
 										<div className="flex items-center justify-end gap-2">
-											{`${item.publicKey.slice(
-												0,
-												4
-											)}...${item.publicKey.slice(-4)}`}
+											{item.publicKey
+												? `${item.publicKey.slice(
+														0,
+														4
+												  )}...${item.publicKey.slice(
+														-4
+												  )}`
+												: "-"}
 										</div>
 									</>
 								</td>
 								<td align="right" className={`py-2 px-6 `}>
 									<>
 										<div className="flex items-center justify-end gap-2">
-											{`${item.profile.authority
-												.toBase58()
-												.slice(
-													0,
-													4
-												)}...${item.profile.authority
-												.toBase58()
-												.slice(-4)}`}
+											{item.profile
+												? `${item.profile.authority
+														.toBase58()
+														.slice(
+															0,
+															4
+														)}...${item.profile.authority
+														.toBase58()
+														.slice(-4)}`
+												: "-"}
 										</div>
 									</>
 								</td>
@@ -339,7 +357,13 @@ const ProfileTable = () => {
 										className="bg-primary-dark px-2 py-[1px] rounded-lg flex items-center justify-start w-fit"
 									>
 										{organization}:{" "}
-										{referralsCount[organization]}
+										{
+											(
+												referralsCount as {
+													[key: string]: number;
+												}
+											)[organization]
+										}
 									</div>
 								))}
 							</div>

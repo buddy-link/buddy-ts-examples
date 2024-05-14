@@ -1,9 +1,10 @@
 import { MEMBER_ITEMS_PER_PAGE } from "../lib/constants";
-import { serializedMemberType } from "../ui/Tables/types";
+import { SerializedData } from "../ui/Tables/types";
+
 import Loader from "./Loader";
 
 interface Props {
-	data: serializedMemberType[];
+	data: SerializedData[];
 	isLoading: boolean;
 	page: number;
 	onNavigate: (type: "prev" | "next") => void;
@@ -54,17 +55,14 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 									target="_blank"
 								>
 									<div className="flex xl:hidden items-center justify-center gap-2">
-										{/*@ts-expect-error types still WIP*/}
-										{item.profile.name.length > 12 ? (
-											`${
-												//@ts-expect-error types still WIP
-												item.profile.name.slice(0, 9)
-											}...`
+										{item.profile &&
+										item.profile.name.length > 12 ? (
+											`${item.profile.name.slice(
+												0,
+												9
+											)}...`
 										) : (
-											<>
-												{/*@ts-expect-error types still WIP*/}
-												{item.profile.name}
-											</>
+											<>{item.profile?.name ?? "-"}</>
 										)}
 										<img
 											src="/solscan-logo.png"
@@ -73,8 +71,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 										/>
 									</div>
 									<div className="hidden xl:flex items-center justify-center gap-2">
-										{/*@ts-expect-error types still WIP*/}
-										{item.profile.name}
+										{item.profile?.name ?? "-"}
 										<img
 											src="/solscan-logo.png"
 											alt="Solscan"
@@ -96,17 +93,11 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 									className="flex items-center justify-center gap-2"
 								>
 									<div className="flex xl:hidden items-center justify-center gap-2">
-										{/*@ts-expect-error types still WIP*/}
-										{item.member.name.length > 12 ? (
-											`${
-												//@ts-expect-error types still WIP
-												item.member.name.slice(0, 9)
-											}...`
+										{item.member &&
+										item.member.name.length > 12 ? (
+											`${item.member.name.slice(0, 9)}...`
 										) : (
-											<>
-												{/*@ts-expect-error types still WIP*/}
-												{item.member.name}
-											</>
+											<>{item.member?.name ?? "-"}</>
 										)}
 										<img
 											src="/solscan-logo.png"
@@ -115,8 +106,7 @@ const MembersTable = ({ data, isLoading, page, onNavigate }: Props) => {
 										/>
 									</div>
 									<div className="hidden xl:flex items-center justify-center gap-2">
-										{/*@ts-expect-error types still WIP*/}
-										{item.member.name}
+										{item.member?.name ?? "-"}
 										<img
 											src="/solscan-logo.png"
 											alt="Solscan"
