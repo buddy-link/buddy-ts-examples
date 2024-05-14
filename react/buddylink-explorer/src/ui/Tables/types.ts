@@ -76,7 +76,7 @@ export type TreasuryData = {
 	owners: Owner[];
 };
 
-export interface OrganizationData {
+export type OrganizationData = {
 	authority: string;
 	bump: number;
 	dateCreated: number;
@@ -88,7 +88,7 @@ export interface OrganizationData {
 	accountVersion: number;
 	allowMultiAttribution: boolean;
 	volumeRequiredForRewards: string;
-}
+};
 
 export type MemberAccountInfo = {
 	account: Account;
