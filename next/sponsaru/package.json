@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "husky install",
     "lint": "next lint --no-cache",
     "lint:fix": "next lint --no-cache --fix",
     "type-check": "tsc --noEmit"
@@ -38,6 +37,7 @@
     "eslint-config-next": "^14.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^17.7.0",
     "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-prettier": "^5.1.3",
