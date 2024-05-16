@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { truncateString } from '@/utils/truncate';

@@ -8,7 +8,6 @@ import { Attributes } from 'graphology-types';
 import { ChartProps, Position } from './types';
 import { TeamDialog } from './team-dialog';
 import { Button } from './ui/button';
-import axios from 'axios';
 import { JoystickIcon, TeamsIcon } from '@/assets/icons';
 
 const getNextPosition = (prevPosition: Position, prevSize: number, currSize: number): Position => {

@@ -33,10 +33,4 @@ const MobileMenuContent = React.forwardRef<
 ));
 MobileMenuContent.displayName = DialogPrimitive.Content.displayName;
 
-export {
-  MobileMenu,
-  MobileMenuPortal,
-  MobileMenuClose,
-  MobileMenuTrigger,
-  MobileMenuContent
-};
+export { MobileMenu, MobileMenuPortal, MobileMenuClose, MobileMenuTrigger, MobileMenuContent };
