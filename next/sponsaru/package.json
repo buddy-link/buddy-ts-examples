@@ -12,24 +12,30 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@sigma/node-image": "^3.0.0-beta.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "graphology": "^0.25.4",
+    "iwanthue": "^2.0.0",
     "lucide-react": "^0.378.0",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "sigma": "^3.0.0-beta.18",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.2.3",
-    "@types/node": "^20",
+    "@types/node": "^20.12.12",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
-    "eslint": "^8",
-    "eslint-config-next": "^12",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
+    "eslint": "8ˆ",
+    "eslint-config-next": "^14.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-n": "^17.7.0",
@@ -39,6 +45,7 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-unused-imports": "^3.2.0",
+    "graphology-types": "^0.24.7",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "postcss": "^8",
@@ -47,9 +54,12 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "next lint --fix --file",
-      "tsc --noEmit"
+    "*.ts?(x)": [
+      "tsc --noEmit",
+      "eslint --fix"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix"
     ]
   }
 }
