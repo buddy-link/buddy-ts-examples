@@ -2,7 +2,9 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
-import clsx from 'clsx';
+import Header from '@/components/header';
+import { WalletConnectionProvider } from 'Providers/wallet-provider';
+import { cn } from '@/lib/utils';
 
 const popins = Poppins({
   subsets: ['latin'],
@@ -21,7 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(popins.className, 'bg-[#FCF4EE] ')}>{children}</body>
+      <body className={cn(popins.className, 'bg-[#FCF4EE] pt-24')}>
+        <WalletConnectionProvider>
+          <Header />
+          {children}
+        </WalletConnectionProvider>
+      </body>
     </html>
   );
 }

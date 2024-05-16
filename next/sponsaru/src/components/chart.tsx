@@ -8,6 +8,8 @@ import { Attributes } from 'graphology-types';
 import { ChartProps, Position } from './types';
 import { TeamDialog } from './team-dialog';
 import { Button } from './ui/button';
+import axios from 'axios';
+import { JoystickIcon, TeamsIcon } from '@/assets/icons';
 
 const getNextPosition = (prevPosition: Position, prevSize: number, currSize: number): Position => {
   const distance = (prevSize + currSize) / 40; // Adding 5 as a buffer to ensure no overlap
@@ -19,6 +21,22 @@ const getNextPosition = (prevPosition: Position, prevSize: number, currSize: num
 
 const Chart = ({ nodes }: ChartProps) => {
   const [open, setOpen] = useState(false);
+
+  // useEffect(() => {
+  //   const res = axios
+  //     .get('https://7h6ggyk6yf.execute-api.us-east-1.amazonaws.com/dev/organizations', {
+  //       headers: {
+  //         Authorization: `Bearer z3RLMDSix54as3nOtaP1cawy9fhykGsc581JPLSs
+  //       `,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data', error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -82,13 +100,15 @@ const Chart = ({ nodes }: ChartProps) => {
   return (
     <>
       <TeamDialog open={open} onClose={() => setOpen(false)} />
-      <div className="relative pt-20 rounded-lg overflow-hidden">
+      <div className="relative rounded-lg overflow-hidden">
         <div id="sigma-container" className="bg-white rounded-xl" style={{ width: '80vw', height: '80vh' }} />
         <div className="absolute bottom-4 left-4 flex gap-4 items-center justify-start">
-          <Button type="button" variant="primary" onClick={() => setOpen(true)}>
+          <Button type="button" variant="primary" className="text-white gap-2 px-6 py-4" onClick={() => setOpen(true)}>
+            <JoystickIcon />
             Quests
           </Button>
-          <Button type="button" variant="primary" onClick={() => setOpen(true)}>
+          <Button type="button" variant="primary" className="text-white gap-2 px-6 py-4" onClick={() => setOpen(true)}>
+            <TeamsIcon />
             Teams
           </Button>
         </div>
