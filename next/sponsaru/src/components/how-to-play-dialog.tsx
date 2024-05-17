@@ -10,8 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import GoAnimation from './go-animation';
+import { DialogOverlay } from '@radix-ui/react-dialog';
 
 const sections = [
   {
@@ -38,16 +39,15 @@ const HowToPlayDialog = () => {
     setOpenDialog(true);
   }, []);
 
+  const onOpenChange = useCallback((open: boolean) => {
+    setOpenDialog(open);
+    if (!open) setOpenAnimation(true);
+  }, []);
+
   return (
     <>
-      {openAnimation && <GoAnimation />}
-      <Dialog
-        open={openDialog}
-        onOpenChange={() => {
-          setOpenDialog(false);
-          setOpenAnimation(true);
-        }}
-      >
+      {!openDialog && openAnimation && <GoAnimation open={openAnimation} />}
+      <Dialog open={openDialog} onOpenChange={(open) => onOpenChange(open)}>
         <DialogTrigger asChild>
           <Button type="button" variant="primary" className="text-white gap-2 px-6 py-4">
             How to Play

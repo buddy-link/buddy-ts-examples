@@ -3,18 +3,19 @@
 import { cn } from '@/lib/utils';
 import React, { useEffect, useRef, useState } from 'react';
 
-const GoAnimation = () => {
+const GoAnimation = ({ open }: { open: boolean }) => {
   const [visible, setVisible] = useState(false);
   const ref = useRef(false);
 
   useEffect(() => {
+    if (!open) return;
     setVisible(true);
     const timer = setTimeout(() => {
       setVisible(false);
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [open]);
 
   if (!visible) return null;
 
