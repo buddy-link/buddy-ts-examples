@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 import CircularProgressBar from './circular-progress-bar';
+import { cn } from '@/lib/utils';
 
 const TeamsDialog = () => {
   return (
@@ -34,7 +35,7 @@ const TeamsDialog = () => {
         </DialogDescription>
 
         <div className="grid grid-cols-3 gap-5">
-          {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((quest, index) => (
+          {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((team, index) => (
             <div
               key={index}
               className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem]"
@@ -49,11 +50,11 @@ const TeamsDialog = () => {
                 <div className="flex flex-col items-center justify-center whitespace-nowrap">
                   <span className="text-light-primary font-bold">Members</span>
 
-                  <span className="text-light-primary text-[0.625rem]">{'100,000'}</span>
+                  <span className="text-[0.625rem]">{'100,000'}</span>
                 </div>
               </div>
-              <Button variant="primary" className="text-white gap-2 px-6 py-4">
-                Join
+              <Button variant={index === 1 ? 'destructive' : 'primary'} className={cn('text-white gap-2 px-6 py-4 ')}>
+                {index === 1 ? 'Leave' : 'Join'}
               </Button>
             </div>
           ))}

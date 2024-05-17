@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(popins.className, 'bg-[#FCF4EE] pt-24')}>
+      <body className={cn(popins.className, 'bg-[#FCF4EE] relative mt-24')}>
         <WalletConnectionProvider>
           <Header />
           {children}
