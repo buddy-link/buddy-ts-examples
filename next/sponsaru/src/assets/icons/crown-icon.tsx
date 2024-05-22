@@ -14,8 +14,8 @@ export const CrownIcon = ({ ...props }: React.SVGProps<SVGSVGElement>) => {
           y2="27.1649"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FADDB8" />
-          <stop offset="1" stop-color="#F9AA92" />
+          <stop stopColor="#FADDB8" />
+          <stop offset="1" stopColor="#F9AA92" />
         </linearGradient>
       </defs>
     </svg>

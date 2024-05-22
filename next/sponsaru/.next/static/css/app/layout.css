@@ -1046,9 +1046,6 @@ video {
 .visible {
   visibility: visible;
 }
-.collapse {
-  visibility: collapse;
-}
 .fixed {
   position: fixed;
 }
@@ -1149,12 +1146,6 @@ video {
 .mt-4 {
   margin-top: 1rem;
 }
-.mt-20 {
-  margin-top: 5rem;
-}
-.mt-32 {
-  margin-top: 8rem;
-}
 .flex {
   display: flex;
 }
@@ -1163,9 +1154,6 @@ video {
 }
 .grid {
   display: grid;
-}
-.hidden {
-  display: none;
 }
 .aspect-square {
   aspect-ratio: 1 / 1;
@@ -1222,9 +1210,6 @@ video {
 .h-screen {
   height: 100vh;
 }
-.h-\[60vh\] {
-  height: 60vh;
-}
 .w-10 {
   width: 2.5rem;
 }
@@ -1266,9 +1251,6 @@ video {
 }
 .w-full {
   width: 100%;
-}
-.w-screen {
-  width: 100vw;
 }
 .min-w-48 {
   min-width: 12rem;
@@ -1777,11 +1759,6 @@ video {
 .ring-0 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-.ring {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 .ring-offset-background {

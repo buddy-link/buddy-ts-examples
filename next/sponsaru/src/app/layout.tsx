@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/header';
-import { WalletConnectionProvider } from 'Providers/wallet-provider';
+import { WalletConnectionProvider } from '@/providers/wallet-provider';
 import { cn } from '@/lib/utils';
+import ReactQueryProvider from '@/providers/react-query-provider';
 
 const popins = Poppins({
   subsets: ['latin'],
@@ -25,8 +26,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(popins.className, 'bg-[#FCF4EE] relative mt-24')}>
         <WalletConnectionProvider>
-          <Header />
-          {children}
+          <ReactQueryProvider>
+            <Header />
+            {children}
+          </ReactQueryProvider>
         </WalletConnectionProvider>
       </body>
     </html>

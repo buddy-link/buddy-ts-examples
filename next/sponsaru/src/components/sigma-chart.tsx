@@ -12,6 +12,7 @@ import QuestsDialog from './quests-dialog';
 import TeamsDialog from './teams-dialog';
 import HowToPlayDialog from './how-to-play-dialog';
 import { TeamPopover } from './team-popover';
+import { useTeams } from '@/hooks/use-teams';
 
 const getNextPosition = (prevPosition: Position, prevSize: number, currSize: number): Position => {
   const distance = (prevSize + currSize) / 40;
@@ -25,6 +26,8 @@ const Chart = ({ nodes }: ChartProps) => {
   const [open, setOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
+
+  const { data } = useTeams();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

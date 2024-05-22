@@ -123,6 +123,7 @@ const ForceGraphComponent = () => {
           onNodeClick={handleNodeClick}
           width={window.innerWidth * 0.8}
           height={window.innerHeight * 0.8}
+          backgroundColor="white"
         />
         <div className="absolute top-5 right-5">
           <Leaderboard />
