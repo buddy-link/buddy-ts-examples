@@ -1155,6 +1155,9 @@ video {
 .grid {
   display: grid;
 }
+.hidden {
+  display: none;
+}
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
@@ -1764,6 +1767,10 @@ video {
 .ring-offset-background {
   --tw-ring-offset-color: hsl(var(--background));
 }
+.invert {
+  --tw-invert: invert(100%);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -1810,6 +1817,21 @@ video {
     opacity: var(--tw-exit-opacity, 1);
     transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
   }
+}
+.animate-in {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+}
+.fade-in-0 {
+  --tw-enter-opacity: 0;
+}
+.zoom-in-95 {
+  --tw-enter-scale: .95;
 }
 .duration-200 {
   animation-duration: 200ms;

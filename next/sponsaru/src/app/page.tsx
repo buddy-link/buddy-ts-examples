@@ -1,12 +1,12 @@
 import React from 'react';
-import Chart from '@/components/sigma-chart';
+import Chart from '@/components/chart';
 import { nodes } from '@/components/data';
 
 export default function Home() {
   const randomTree = genRandomTree(5000, false);
   return (
     <main className="flex flex-col items-center justify-between ">
-      <Chart nodes={nodes} />
+      <Chart />
     </main>
   );
 }
