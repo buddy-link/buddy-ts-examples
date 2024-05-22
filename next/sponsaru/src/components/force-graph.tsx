@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ForceGraph2D from 'react-force-graph-2d';
+
 import { generateGraphData } from '@/app/test/generateData';
 import { NodeObject } from 'react-force-graph-2d';
 import HowToPlayDialog from './how-to-play-dialog';
@@ -9,6 +9,9 @@ import QuestsDialog from './quests-dialog';
 import { TeamPopover } from './team-popover';
 import TeamsDialog from './teams-dialog';
 import { NodeData, Position } from './types';
+import dynamic from 'next/dynamic';
+
+const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false });
 
 export type Node = {
   id: number | string;
@@ -56,14 +59,14 @@ const ForceGraphComponent = () => {
           node.childLinks.forEach((link) => {
             visibleLinks.push(link);
             const targetNode = typeof link.target === 'object' ? link.target : nodesById[link.target];
-            traverseTree(targetNode);
+            traverseTree(targetNode as Node);
           });
         }
       }
     };
 
     gData.nodes.forEach((node) => {
-      if (node.childLinks.length > 0 || !node.collapsed) traverseTree(node);
+      if (node.childLinks.length > 0 || !node.collapsed) traverseTree(node as Node);
     });
 
     return { nodes: visibleNodes, links: visibleLinks };
@@ -73,26 +76,32 @@ const ForceGraphComponent = () => {
     ctx.save();
     ctx.beginPath();
     const radius = 4.1 * 1.4;
-    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, true);
+    ctx.arc(node?.x ?? 0, node?.y ?? 0, radius, 0, 2 * Math.PI, true);
     ctx.fill();
 
     const img = new Image();
     img.src = node.imageUrl;
     const size = radius * 10;
-    ctx.drawImage(img, node.x - size / 2, node.y - size / 2, size, size);
+    ctx.drawImage(img, (node?.x ?? 0) - size / 2, (node?.y ?? 0) - size / 2, size, size);
     ctx.restore();
   }, []);
 
   const handleNodeClick = useCallback((node: NodeObject, event: MouseEvent) => {
-    setSelectedNode((prevSelectedNode) => {
+    setSelectedNode((prevSelectedNode: Node | null) => {
       if (prevSelectedNode?.id === node.id) return prevSelectedNode;
 
       return {
         id: `${node?.id}` ?? '',
+        collapsed: false,
+        childLinks: [],
+        imageUrl: '',
+        size: 0,
+        group: 0,
+        x: undefined,
+        y: undefined,
         label: 'aaaaa',
         members: node.size * 4,
         image: node.imageUrl,
-        ...node,
       };
     });
 
@@ -117,12 +126,10 @@ const ForceGraphComponent = () => {
           d3AlphaMin={0.6}
           graphData={getAllNodesAndLinks()}
           nodeAutoColorBy="group"
-          linkVisibility={false}
+          linkVisibility={true}
           nodeCanvasObjectMode={() => 'after'}
-          nodeCanvasObject={drawNodes}
+          nodeCanvasObject={(node, ctx) => drawNodes(node as Node, ctx)}
           onNodeClick={handleNodeClick}
-          width={window.innerWidth * 0.8}
-          height={window.innerHeight * 0.8}
           backgroundColor="white"
         />
         <div className="absolute top-5 right-5">

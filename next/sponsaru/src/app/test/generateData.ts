@@ -40,6 +40,13 @@ export const generateGraphData = (N: number, numberOfGroups: number): GraphData 
       });
     }
 
+    for (let i = 1; i < groupNodes.length; i++) {
+      links.push({
+        source: groupNodes[i - 1 <= 0 ? i : i - 1].id,
+        target: groupNodes[i].id,
+      });
+    }
+
     currentNodeId += nodesPerGroup;
   }
 
