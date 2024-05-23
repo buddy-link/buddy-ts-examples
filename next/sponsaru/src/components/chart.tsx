@@ -19,16 +19,16 @@ import { SoloPopover } from './solo-popover';
 import SoloGraph2 from './solo-graph2';
 
 const DEFAULT_ARGS = {
-  order: 5000,
-  size: 100,
-  clusters: 7,
+  order: 80,
+  size: 1,
+  clusters: 3,
   edgesRenderer: 'edges-default',
 };
 
 const Chart = () => {
   const [open, setOpen] = useState(false);
   const [selectedTeamNode, setSelectedTeamNode] = useState<NodeData | null>(null);
-  const [selectedSoloNode, setSelectedSoloNode] = useState<NodeObject | null>(null);
+  const [selectedSoloNode, setSelectedSoloNode] = useState<NodeData | null>(null);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
   const { data } = useTeams();
@@ -51,9 +51,28 @@ const Chart = () => {
     []
   );
 
-  const handleSoloNodeClick = useCallback((node: NodeObject) => {
-    setSelectedSoloNode(node);
-    setOpen(true);
+  const handleSoloNodeClick = useCallback(
+    (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => {
+      const nodeAttributes = graph.getNodeAttributes(node);
+      setSelectedSoloNode({
+        id: node,
+        label: nodeAttributes.originalLabel,
+        members: nodeAttributes.size * 4,
+        image: nodeAttributes.image,
+      });
+      setPosition({
+        x: event.x,
+        y: event.y,
+      });
+      setOpen(true);
+    },
+    []
+  );
+
+  const onPopoverClose = useCallback(() => {
+    setSelectedSoloNode(null);
+    setSelectedTeamNode(null);
+    setOpen(false);
   }, []);
 
   return (
@@ -61,10 +80,20 @@ const Chart = () => {
       <Tabs defaultValue="team">
         <div className="relative rounded-lg overflow-hidden" style={{ width: '80vw', height: '80vh' }}>
           {selectedTeamNode && (
-            <TeamPopover open={open} onClose={() => setOpen(false)} node={selectedTeamNode} position={position} />
+            <TeamPopover
+              open={!!selectedTeamNode && open}
+              onClose={onPopoverClose}
+              node={selectedTeamNode}
+              position={position}
+            />
           )}
           {selectedSoloNode && (
-            <SoloPopover open={open} onClose={() => setOpen(false)} node={selectedSoloNode} position={position} />
+            <SoloPopover
+              open={!!selectedSoloNode && open}
+              onClose={onPopoverClose}
+              node={selectedSoloNode}
+              position={position}
+            />
           )}
 
           <div className="absolute top-4 left-4 z-40">
@@ -74,7 +103,8 @@ const Chart = () => {
             <TeamsGraph onNodeClick={handleTeamNodeClick} />
           </TabsContent>
           <TabsContent value="solo" className="h-full">
-            <SoloGraph2 args={DEFAULT_ARGS} />
+            {/* <SoloGraph handleNodeClick={handleSoloNodeClick} /> */}
+            <SoloGraph2 args={DEFAULT_ARGS} onNodeClick={handleSoloNodeClick} />
           </TabsContent>
           <div className="absolute top-5 right-5">
             <Leaderboard />

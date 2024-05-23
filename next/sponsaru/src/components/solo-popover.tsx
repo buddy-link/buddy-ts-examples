@@ -31,9 +31,9 @@ export function SoloPopover({ open, onClose, node, position }: TeamPopoverProps)
             <span className="flex items-center justify-center space-x-2 text-light font-normal">USER POINTS</span>
           </div>
 
-          {/* <Button type="button" variant="primary" className="px-8 mt-4" onClick={onClose}>
+          <Button type="button" variant="primary" className="px-8 mt-4" onClick={onClose}>
             Join
-          </Button> */}
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

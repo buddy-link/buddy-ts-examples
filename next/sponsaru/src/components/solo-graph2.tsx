@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Graph from 'graphology';
 import clusters from 'graphology-generators/random/clusters';
 
@@ -6,23 +6,25 @@ import circlepack from 'graphology-layout/circlepack';
 import seedrandom from 'seedrandom';
 import Sigma from 'sigma';
 import { EdgeLineProgram, EdgeRectangleProgram } from 'sigma/rendering';
-
-const DEFAULT_ARGS = {
-  order: 500,
-  size: 2000,
-  clusters: 5,
-  edgesRenderer: 'edges-default',
-};
+import { Node } from './solo-graph';
+import { NodeImageProgram } from '@sigma/node-image';
+import { Attributes } from 'graphology-types';
+import { MouseCoords } from 'sigma/types';
 
 interface SoloGraph2Props {
-  args: typeof DEFAULT_ARGS;
+  args: {
+    clusters: number;
+    edgesRenderer: string;
+    size: number;
+    order: number;
+  };
+  onNodeClick: (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => void;
 }
 
-const SoloGraph2: React.FC<SoloGraph2Props> = ({ args }) => {
+const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
   useEffect(() => {
     const rng = seedrandom('sigma');
     const state = {
-      ...DEFAULT_ARGS,
       ...args,
     };
 
@@ -40,9 +42,12 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args }) => {
     let i = 0;
     graph.forEachNode((node, { cluster }) => {
       graph.mergeNodeAttributes(node, {
-        size: graph.degree(node) / 3,
-        label: `Node n°${++i}, in cluster n°${cluster}`,
+        size: i / 3,
+
         color: colors[cluster + ''],
+        image: '/logo.webp',
+        hiddenLabel: `Node n°${++i}, in cluster n°${cluster}`,
+        originalLabel: `Node n°${++i}, in cluster n°${cluster}`,
       });
     });
 
@@ -51,16 +56,33 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args }) => {
     const renderer = new Sigma(graph, container, {
       defaultEdgeColor: 'rgba(0,0,0,0)',
       defaultEdgeType: state.edgesRenderer,
-
       edgeProgramClasses: {
         'edges-default': EdgeRectangleProgram,
         'edges-fast': EdgeLineProgram,
+      },
+      edgeLabelWeight: 'bold',
+      defaultNodeType: 'image',
+
+      nodeProgramClasses: {
+        image: NodeImageProgram,
       },
     });
 
     // Cheap trick: tilt the camera a bit to make labels more readable:
     renderer.getCamera().setState({
       angle: 0.2,
+    });
+
+    renderer.on('enterNode', ({ node }) => {
+      graph.setNodeAttribute(node, 'label', graph.getNodeAttribute(node, 'originalLabel'));
+    });
+
+    renderer.on('clickNode', ({ node, event }) => {
+      onNodeClick(graph, node, event);
+    });
+
+    renderer.on('leaveNode', ({ node }) => {
+      graph.removeNodeAttribute(node, 'label');
     });
 
     // Cleanup function to remove event listeners

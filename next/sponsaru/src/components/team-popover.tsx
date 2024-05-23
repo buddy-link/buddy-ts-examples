@@ -15,6 +15,11 @@ export function TeamPopover({ open, onClose, node, position }: TeamPopoverProps)
 
   return (
     <Popover open={open} onOpenChange={onClose}>
+      {/* <PopoverTrigger asChild>
+        <div className="hidden" style={{ position: 'fixed', left: 0, top: position.y }}>
+          
+        </div>
+      </PopoverTrigger> */}
       <PopoverContent
         className="w-fit min-w-[240px] z-50 gap-3 py-8 shadow-none border-4 border-[#FCF4EE]"
         style={{
