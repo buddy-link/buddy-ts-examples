@@ -36,7 +36,15 @@ export function TeamPopover({ open, onClose, node, position }: TeamPopoverProps)
               {node.members.toLocaleString('en-US', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
-              })}
+              })}{' '}
+              members
+            </span>
+            <span className="flex items-center justify-center space-x-2 text-light font-semibold">
+              {node.points.toLocaleString('en-US', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}{' '}
+              points
             </span>
           </div>
 

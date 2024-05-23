@@ -3,6 +3,7 @@ export type NodeData = {
   label: string;
   image: string;
   members: number;
+  points: number;
 };
 
 export type Position = {

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Graph from 'graphology';
 import { Attributes } from 'graphology-types';
-import { ChartProps, NodeData, Position } from './types';
+import { NodeData, Position } from './types';
 import Leaderboard from './leaderboard';
 import QuestsDialog from './quests-dialog';
 import TeamsDialog from './teams-dialog';
@@ -11,10 +11,8 @@ import HowToPlayDialog from './how-to-play-dialog';
 import { TeamPopover } from './team-popover';
 import { useTeams } from '@/hooks/use-teams';
 import { Tabs, TabsContent } from './ui/tabs';
-import SoloGraph from './solo-graph';
 import TeamsGraph from './teams-graph';
 import { MouseCoords } from 'sigma/types';
-import { NodeObject } from 'react-force-graph-2d';
 import { SoloPopover } from './solo-popover';
 import SoloGraph2 from './solo-graph2';
 
@@ -31,16 +29,32 @@ const Chart = () => {
   const [selectedSoloNode, setSelectedSoloNode] = useState<NodeData | null>(null);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
-  const { data } = useTeams();
+  const { data: teamsData, isLoading: isTeamsDataLoading } = useTeams();
+
+  const teams = useMemo(() => {
+    if (!teamsData || isTeamsDataLoading) return [];
+    return teamsData.groups.map((team: { group_name: string; total_members: string; total_points: string }) => ({
+      id: team.group_name,
+      label: team.group_name,
+      members: team.total_members,
+      points: team.total_points,
+      image: '/logo.webp',
+    }));
+  }, [isTeamsDataLoading, teamsData]);
+
+  console.log('teams', teams);
 
   const handleTeamNodeClick = useCallback(
     (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => {
       const nodeAttributes = graph.getNodeAttributes(node);
+      console.log('nodeAttributes', nodeAttributes);
+
       setSelectedTeamNode({
         id: node,
         label: nodeAttributes.originalLabel,
-        members: nodeAttributes.size * 4,
+        members: nodeAttributes.members,
         image: nodeAttributes.image,
+        points: nodeAttributes.points,
       });
       setPosition({
         x: event.x,
@@ -59,6 +73,7 @@ const Chart = () => {
         label: nodeAttributes.originalLabel,
         members: nodeAttributes.size * 4,
         image: nodeAttributes.image,
+        points: 0,
       });
       setPosition({
         x: event.x,
@@ -100,7 +115,7 @@ const Chart = () => {
             <HowToPlayDialog />
           </div>
           <TabsContent value="team" className="h-full">
-            <TeamsGraph onNodeClick={handleTeamNodeClick} />
+            <TeamsGraph onNodeClick={handleTeamNodeClick} nodes={teams} isLoading={isTeamsDataLoading} />
           </TabsContent>
           <TabsContent value="solo" className="h-full">
             {/* <SoloGraph handleNodeClick={handleSoloNodeClick} /> */}

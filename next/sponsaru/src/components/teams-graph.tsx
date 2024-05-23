@@ -2,17 +2,19 @@ import { NodeImageProgram } from '@sigma/node-image';
 import Graph from 'graphology';
 
 import { useEffect, Attributes, useState } from 'react';
-import { nodes } from './data';
 import Sigma from 'sigma';
 import { NodeData, Position } from './types';
 import { MouseCoords } from 'sigma/types';
 
 type TeamGraphProps = {
+  nodes: NodeData[];
   onNodeClick: (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => void;
+  isLoading: boolean;
 };
 
-const TeamsGraph = ({ onNodeClick }: TeamGraphProps) => {
+const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
   useEffect(() => {
+    if (nodes.length === 0 || isLoading) return;
     if (typeof window !== 'undefined') {
       const container = document.getElementById('sigma-container') as HTMLElement;
       if (!container) {
@@ -32,14 +34,16 @@ const TeamsGraph = ({ onNodeClick }: TeamGraphProps) => {
         } else {
           position = getNextPosition(prevPosition, prevSize, node.members);
           prevPosition = position;
-          prevSize = node.members;
+          prevSize = node.points >= 40 ? node.points / 4 : 10;
         }
         graph.addNode(node.id, {
           ...position,
-          size: node.members / 4,
+          size: node.points >= 40 ? node.points / 4 : 10,
           image: node.image,
           hiddenLabel: node.label,
           originalLabel: node.label,
+          points: node.points,
+          members: node.members,
         } as Attributes);
       });
 
