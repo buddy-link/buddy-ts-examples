@@ -12,8 +12,14 @@ import {
 } from './ui/dialog';
 import CircularProgressBar from './circular-progress-bar';
 import { cn } from '@/lib/utils';
+import { Team } from './chart';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
-const TeamsDialog = () => {
+type TeamsDialogProps = {
+  teams: Team[];
+  isLoading: boolean;
+};
+const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,22 +41,48 @@ const TeamsDialog = () => {
         </DialogDescription>
 
         <div className="grid grid-cols-3 gap-5">
-          {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((team, index) => (
+          {teams.map((team, index) => (
             <div
               key={index}
-              className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem]"
+              className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm"
             >
               <div className="flex gap-2 items-center justify-center">
                 <div className="flex flex-col items-start justify-center whitespace-nowrap">
-                  <span className="text-light-primary font-bold">Bonks</span>
+                  <div className="text-light-primary font-bold">
+                    {team.id.length >= 13 ? (
+                      <TooltipProvider delayDuration={300}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="cursor-pointer">{team.id.slice(0, 10)}...</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p> {team.id}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      team.id
+                    )}
+                  </div>
                   <p className="text-[0.625rem]">
-                    points:<span className="ml-1">{'100,000'}</span>
+                    points:
+                    <span className="ml-1">
+                      {team.points.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })}
+                    </span>
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-center whitespace-nowrap">
                   <span className="text-light-primary font-bold">Members</span>
 
-                  <span className="text-[0.625rem]">{'100,000'}</span>
+                  <span className="text-[0.625rem]">
+                    {team.members.toLocaleString('en-US', {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </span>
                 </div>
               </div>
               <Button variant={index === 1 ? 'destructive' : 'primary'} className={cn('text-white gap-2 px-6 py-4 ')}>
