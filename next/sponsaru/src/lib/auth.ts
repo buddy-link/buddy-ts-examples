@@ -1,8 +1,8 @@
 import { AxiosInstance } from 'axios';
 
-const AuthAPI = process.env.NEXT_PUBLIC_BUDDYLINK_AUTH_API_URL;
+const AuthAPI = `https://${process.env.NEXT_PUBLIC_BUDDYLINK_AUTH_API_URL}`;
 
-interface GetUserResponse {
+type GetUserResponse = {
   query_time: string;
   emailIdentities: {
     emailAddress: string;
@@ -19,7 +19,7 @@ interface GetUserResponse {
   }[];
   walletIdentities: string[];
   error?: string;
-}
+};
 
 //https://{{auth-API-Address}}/user
 export async function GetUser(axios: AxiosInstance): Promise<GetUserResponse> {
@@ -39,17 +39,17 @@ export async function GetUser(axios: AxiosInstance): Promise<GetUserResponse> {
 }
 
 // https://{{auth-API-Address}}/user/identities/email
-interface CreateUserEmailIdentity {
+type CreateUserEmailIdentity = {
   email: string;
   primary: boolean;
-}
+};
 
-interface CreateUserEmailIdentityResponse {
+type CreateUserEmailIdentityResponse = {
   emailAddress: string;
   userId: string;
   primary: boolean;
   error?: string;
-}
+};
 
 export async function CreateUserEmailIdentity(
   axios: AxiosInstance,
@@ -70,16 +70,16 @@ export async function CreateUserEmailIdentity(
 }
 
 //https://{{auth-API-Address}}/user/identities/email/remove
-interface RemoveUserEmailIdentity {
+type RemoveUserEmailIdentity = {
   email: string;
-}
+};
 
-interface RemoveUserEmailIdentityResponse {
+type RemoveUserEmailIdentityResponse = {
   emailAddress: string;
   userId: string;
   success: boolean;
   error?: string;
-}
+};
 
 export async function RemoveUserEmailIdentity(
   axios: AxiosInstance,
@@ -100,17 +100,17 @@ export async function RemoveUserEmailIdentity(
 }
 
 // https://{{auth-API-Address}}/user/identities/wallet
-interface CreateUserWalletIdentity {
+type CreateUserWalletIdentity = {
   walletPublicKey: string;
   primary: boolean;
-}
+};
 
-interface CreateUserWalletIdentityResponse {
+type CreateUserWalletIdentityResponse = {
   walletPublicKey: string;
   userId: string;
   primary: boolean;
   error?: string;
-}
+};
 
 export async function CreateUserWalletIdentity(
   axios: AxiosInstance,
@@ -131,16 +131,16 @@ export async function CreateUserWalletIdentity(
 }
 
 //https://{{auth-API-Address}}/user/identities/wallet/remove
-interface RemoveUserWalletIdentity {
+type RemoveUserWalletIdentity = {
   walletPublicKey: string;
-}
+};
 
-interface RemoveUserWalletIdentityResponse {
+type RemoveUserWalletIdentityResponse = {
   walletPublicKey: string;
   userId: string;
   success: boolean;
   error?: string;
-}
+};
 
 export async function RemoveUserWalletIdentity(
   axios: AxiosInstance,

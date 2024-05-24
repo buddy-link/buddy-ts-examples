@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { BuddyConnectWalletButton } from './wallet-connect-button';
+import LoginDialog from './login-dialog';
 
 const Header = () => {
   return (
@@ -9,7 +10,7 @@ const Header = () => {
           <Image src="/logo.webp" alt="logo" width={40} height={40} />
           <span className="text-2xl text-primary-foreground font-bold">Sponsaru</span>
         </div>
-        <BuddyConnectWalletButton />
+        <LoginDialog />
       </div>
     </header>
   );

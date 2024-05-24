@@ -56,7 +56,7 @@ const Chart = () => {
 
   const quests = useMemo(() => {
     if (!questsData || isQuestsDataLoading) return [];
-    return questsData.quests;
+    return questsData;
   }, [isQuestsDataLoading, questsData]);
 
   console.log('teams', teams);
@@ -139,7 +139,7 @@ const Chart = () => {
             <SoloGraph2 args={DEFAULT_ARGS} onNodeClick={handleSoloNodeClick} />
           </TabsContent>
           <div className="absolute top-5 right-5">
-            <Leaderboard />
+            <Leaderboard teamsData={teams} isLoading={isTeamsDataLoading} />
           </div>
           <div className="absolute bottom-4 left-4 flex gap-4 items-center justify-start">
             <QuestsDialog quests={quests} isLoading={isQuestsDataLoading} />

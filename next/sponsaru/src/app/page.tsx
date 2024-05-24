@@ -1,6 +1,5 @@
 import React from 'react';
 import Chart from '@/components/chart';
-import { nodes } from '@/components/data';
 
 export default function Home() {
   const randomTree = genRandomTree(5000, false);

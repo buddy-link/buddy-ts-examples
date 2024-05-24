@@ -1,6 +1,11 @@
-import NextAuth from 'next-auth';
+import NextAuth, { User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { cookies } from 'next/headers';
+import * as nacl from 'tweetnacl';
+import * as bs58 from 'bs58';
+import { CreateUserWalletIdentity, GetUser } from '@/lib/auth';
+import axios from 'axios';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -15,12 +20,69 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
     }),
+
+    CredentialsProvider({
+      name: 'solana',
+      credentials: {
+        publicKey: { type: 'text' },
+        signature: { type: 'text' },
+      },
+
+      async authorize(credentials) {
+        console.log('credentials: ', credentials);
+
+        if (!credentials) return null;
+        try {
+          const cookieStore = cookies();
+          const nonce = cookieStore.get('authNonce');
+
+          console.log(`nonce: ${nonce?.value}`);
+
+          const message = `Sign this message: ${nonce?.value}`;
+          const messageBytes = new TextEncoder().encode(message);
+
+          const publicKeyBytes = bs58.decode(credentials.publicKey as string);
+          const signatureBytes = bs58.decode(credentials.signature as string);
+
+          const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+
+          let user;
+
+          //TODO: Fix wallet identity creation
+          user = await GetUser(axios);
+
+          if (user.error) {
+            user = await CreateUserWalletIdentity(axios, {
+              walletPublicKey: credentials.publicKey as string,
+              primary: true,
+            });
+
+            console.log(`user: ${user.walletPublicKey}`);
+          }
+
+          console.log(`user: ${user.error}`);
+
+          console.log(`result: ${result}`);
+
+          if (!result) {
+            console.log(`authentication failed`);
+            throw new Error('user can not be authenticated');
+          }
+
+          // const user: User = { name: credentials.publicKey as string };
+
+          return user as User;
+        } catch (e) {
+          //TODO: handle authorize error
+          return null;
+        }
+      },
+    }),
   ],
   secret: process.env.AUTH_SECRET!,
   callbacks: {
     signIn: async ({ account }) => {
       const cookieStore = cookies();
-
       if (account?.provider === 'google' && account.id_token) {
         cookieStore.set(
           'google_token',
@@ -31,8 +93,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }),
           { secure: true }
         );
-      }
-      return true;
+        return true;
+      } else return true;
     },
   },
 });

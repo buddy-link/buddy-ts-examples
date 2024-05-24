@@ -6,6 +6,9 @@ import Header from '@/components/header';
 import { WalletConnectionProvider } from '@/providers/wallet-provider';
 import { cn } from '@/lib/utils';
 import ReactQueryProvider from '@/providers/react-query-provider';
+import SessionProvider from '@/providers/session-provider';
+import { Toaster } from '@/components/ui/sonner';
+import SignMessageProvider from '@/providers/sign-message-provider';
 
 const popins = Poppins({
   subsets: ['latin'],
@@ -26,11 +29,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(popins.className, 'bg-[#FCF4EE] relative mt-24')}>
         <WalletConnectionProvider>
-          <ReactQueryProvider>
-            <Header />
-            {children}
-          </ReactQueryProvider>
+          <SessionProvider>
+            <ReactQueryProvider>
+              <Header />
+              {children}
+            </ReactQueryProvider>
+            <SignMessageProvider />
+          </SessionProvider>
         </WalletConnectionProvider>
+        <Toaster />
       </body>
     </html>
   );
