@@ -4,6 +4,7 @@ import { useBuddyState, getOrganizationAccounts } from "buddy.link";
 import useSearch from "./useSearch";
 import { OrganizationAccountInfo, RadioSelectorType } from "./types";
 import TableProvider from "../../components/TableProvider";
+import GraphProvider from "../../components/GraphProvider";
 import { useConnection } from "@solana/wallet-adapter-react";
 
 const Tables = () => {
@@ -94,6 +95,11 @@ const Tables = () => {
 						}
 					/>
 				)}
+			</div>
+			<span>{radioStatus}</span>
+			<span>{JSON.stringify(values)}</span>
+			<div className="w-full bg-[#282828] p-3 md:p-4 rounded-md">
+				<GraphProvider selectedGraph={radioStatus} />
 			</div>
 			<div className="w-full bg-[#282828] p-3 md:p-4 rounded-md">
 				<TableProvider selectedTable={radioStatus} />
