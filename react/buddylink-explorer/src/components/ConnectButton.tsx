@@ -8,7 +8,7 @@ const ConnectButton = () => {
   };
 
   return (
-    <div className="h-full flex w-full">
+    <div className="h-full flex w-full justify-center">
       <button onClick={handleConnect}>Connect to continue</button>
     </div>
   );

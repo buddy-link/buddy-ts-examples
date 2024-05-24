@@ -20,11 +20,18 @@ const Header = () => {
 							className="w-4 h-4 md:h-6 md:w-6"
 							wallet={wallet.wallet}
 						/>
-						<span className="text-xs md:text-base font-bold">{`${wallet.publicKey
-							?.toString()
-							.slice(0, 4)}...${wallet.publicKey
-							?.toString()
-							.slice(-4)}`}</span>
+
+						{wallet.publicKey ? 
+						(
+							<span className="text-xs md:text-base font-bold">{`${wallet.publicKey
+								?.toString()
+								.slice(0, 4)}...${wallet.publicKey
+								?.toString()
+								.slice(-4)}`}</span>
+						) : (
+							<span className="text-xs md:text-base font-bold">Wallet not connected</span>
+						)
+						}
 					</div>
 					{wallet.connected && (
 						<button

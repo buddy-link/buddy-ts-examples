@@ -1,5 +1,6 @@
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import ConnectButton from "./components/ConnectButton";
 import { useInitBuddyLink, useBuddyState } from "buddy.link";
@@ -24,6 +25,7 @@ const App = () => {
 				{!wallet.connected && <ConnectButton />}
 				{wallet.connected && <Tables />}
 			</div>
+			<Footer />
 		</main>
 	);
 };
