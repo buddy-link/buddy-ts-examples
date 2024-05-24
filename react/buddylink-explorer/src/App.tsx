@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import ConnectButton from "./components/ConnectButton";
+import ExampleCards from "./components/ExampleCards";
 import { useInitBuddyLink, useBuddyState } from "buddy.link";
 import Tables from "./ui/Tables";
 
@@ -23,6 +24,7 @@ const App = () => {
 			<Header />
 			<div className="container flex-1">
 				{!wallet.connected && <ConnectButton />}
+				{!wallet.connected && <ExampleCards />}
 				{wallet.connected && <Tables />}
 			</div>
 			<Footer />
