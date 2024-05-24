@@ -11,9 +11,20 @@ const Header = () => {
 	return (
 		<header>
 			<div className="container h-20 flex items-center p-5 ">
-				<h2 className="text-2xl text-primary font-bold">
-					Organization Audit
-				</h2>
+				<a
+				href={"https://buddy.link"}
+				target="_blank"
+				className="flex gap-2 items-center justify-start"
+				>
+					<img
+						src="logo.png"
+						alt="Logo"
+						className="w-6 h-6 md:w-5 md:h-5"
+					/>
+					<h2 className="text-2xl text-primary font-bold">
+						Buddy.Link Explorer
+					</h2>
+				</a>
 				<div className="ml-auto flex flex-col md:flex-row items-center gap-2 md:gap-6">
 					<div className="flex gap-1 md:gap-2 items-center justify-center ">
 						<WalletIcon

@@ -29,6 +29,7 @@ const MemberTable = () => {
 	const [pageMembersParsed, setPageMembersParsed] = useState<
 		SerializedData[]
 	>([]);
+	const [memberCount, setMemberCount] = useState(0);
 
 	useEffect(() => {
 		const fetchMemberAccounts = async () => {
@@ -76,6 +77,7 @@ const MemberTable = () => {
 			);
 			return nameMatch || publicKeyMatch;
 		});
+		setMemberCount(filteredMembers?.length || 0);
 
 		const pageMembers = filteredMembers.slice(
 			startIndex,
@@ -137,6 +139,7 @@ const MemberTable = () => {
 			<div className="max-w-[100vw] overflow-auto pb-4 flex  items-center justify-start w-full">
 				<MemberTableContent
 					pageMembersParsed={pageMembersParsed}
+					filteredMemberCount={memberCount}
 					handleNavigateMembers={handleNavigateMembers}
 					membersPage={membersPage}
 					dataLength={data.length}

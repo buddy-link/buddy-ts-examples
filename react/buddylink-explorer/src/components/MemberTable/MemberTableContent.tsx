@@ -4,6 +4,7 @@ import { SerializedData } from "../../ui/Tables/types";
 
 const MemberTableContent = ({
 	pageMembersParsed,
+	filteredMemberCount,
 	handleNavigateMembers,
 	membersPage,
 	dataLength,
@@ -11,6 +12,7 @@ const MemberTableContent = ({
 	member,
 }: {
 	pageMembersParsed: SerializedData[];
+	filteredMemberCount: number;
 	handleNavigateMembers: (type: "prev" | "next") => void;
 	membersPage: number;
 	dataLength: number;
@@ -99,7 +101,12 @@ const MemberTableContent = ({
 					</tr>
 				))}
 				<tr>
-					<td colSpan={4} className="w-full">
+					<td colSpan={1} className="w-full">
+						<div className="flex gap-2 items-center justify-start w-full pt-4">
+							{`Members found: ${filteredMemberCount || 0} of ${dataLength}`}
+						</div>
+					</td>
+					<td colSpan={3} className="w-full">
 						<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
 							<button
 								className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"

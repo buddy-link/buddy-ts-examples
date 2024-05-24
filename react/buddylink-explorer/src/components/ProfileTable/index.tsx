@@ -28,6 +28,7 @@ const ProfileTable = () => {
 	const [pageProfilesParsed, setPageProfilesParsed] = useState<
 		SerializedData[]
 	>([]);
+	const [profileCount, setProfileCount] = useState(0);
 
 	useEffect(() => {
 		const fetchProfileAccounts = async () => {
@@ -91,6 +92,7 @@ const ProfileTable = () => {
 			);
 			return nameMatch || publicKeyMatch || walletMatch;
 		});
+		setProfileCount(filteredProfiles?.length || 0)
 
 		const pageProfiles = filteredProfiles.slice(
 			startIndex,
@@ -222,7 +224,12 @@ const ProfileTable = () => {
 							</tr>
 						))}
 						<tr>
-							<td colSpan={3} className="w-full">
+						<td colSpan={1} className="w-full">
+							<div className="flex gap-2 items-center justify-start w-full pt-4">
+								{`Profiles found: ${profileCount || 0} of ${data.length}`}
+							</div>
+						</td>
+							<td colSpan={2} className="w-full">
 								<div className="flex gap-2 items-center justify-center lg:justify-end w-full pt-4">
 									<button
 										className="hover:text-primary disabled:opacity-50 disabled:hover:text-white"

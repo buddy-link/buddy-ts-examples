@@ -62,7 +62,14 @@ const Tables = () => {
 			<div className={`w-full grid lg:grid-cols-2 gap-4`}>
 				<Search<RadioSelectorType>
 					title={`Search for ${radioStatus}`}
-					inputPlaceholder="Org name (i.e. laddercaster, staratlas, elementerra)"
+					inputPlaceholder={radioStatus === RadioSelectorType.Organization
+						? "Org name (i.e. laddercaster, staratlas, elementerra)"
+						: radioStatus === RadioSelectorType.Member
+						? "Member name (i.e. 3sv6g3ri45vuhr65)"
+						: radioStatus === RadioSelectorType.Profile
+						? "Profile name or Wallet Address (i.e. nbjwf2pd2ntrqdmug4 or 8ymG...)"
+						: ""
+					}
 					inputValue={
 						radioStatus === RadioSelectorType.Organization
 							? values.organizationValue
