@@ -1,28 +1,22 @@
 {
   "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentity.js -> ./loadCognitoIdentity": {
-    "id": 82129,
+    "id": "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentity.js -> ./loadCognitoIdentity",
     "files": [
-      "static/chunks/129.0ea964d45430c05c.js"
+      "static/chunks/_app-pages-browser_node_modules_aws-sdk_credential-provider-cognito-identity_dist-es_loadCogn-dac8fb.js"
     ]
   },
   "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentityPool.js -> ./loadCognitoIdentity": {
-    "id": 82129,
+    "id": "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentityPool.js -> ./loadCognitoIdentity",
     "files": [
-      "static/chunks/129.0ea964d45430c05c.js"
+      "static/chunks/_app-pages-browser_node_modules_aws-sdk_credential-provider-cognito-identity_dist-es_loadCogn-dac8fb.js"
     ]
   },
   "../node_modules/@aws-sdk/credential-provider-web-identity/dist-es/fromWebToken.js -> @aws-sdk/client-sts": {
-    "id": 4531,
+    "id": "../node_modules/@aws-sdk/credential-provider-web-identity/dist-es/fromWebToken.js -> @aws-sdk/client-sts",
     "files": []
   },
   "../node_modules/@aws-sdk/credential-providers/dist-es/fromTemporaryCredentials.js -> ./loadSts": {
-    "id": null,
+    "id": "../node_modules/@aws-sdk/credential-providers/dist-es/fromTemporaryCredentials.js -> ./loadSts",
     "files": []
-  },
-  "components/solo-graph.tsx -> react-force-graph-2d": {
-    "id": 65294,
-    "files": [
-      "static/chunks/294.7d4255faf428300d.js"
-    ]
   }
 }

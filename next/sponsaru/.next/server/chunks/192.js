@@ -1,1 +1,0 @@
-"use strict";exports.id=192,exports.ids=[192],exports.modules={35192:(t,e,d)=>{d.d(e,{CognitoIdentityClient:()=>o.Q,GetCredentialsForIdentityCommand:()=>i.L,GetIdCommand:()=>n.n});var o=d(82181),i=d(52132),n=d(50647)}};
