@@ -14,8 +14,8 @@ const buttonVariants = cva(
           'rounded-lg px-6 py-3 font-bold text-white transition ease-in-out bg-destructive shadow-[0px_-4px_0px_0px_#C05B56_inset]  hover:shadow-[0px_0px_0px_0px_#C05B56_inset] hover:translate-y-[2px]',
         outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        ghost: 'text-primary-dark',
+        link: 'text-primary- underline-offset-4 hover:underline',
         primary:
           'rounded-lg px-6 py-3 font-bold text-white transition ease-in-out bg-light-primary shadow-[0px_-4px_0px_0px_#ff9b61_inset] hover:shadow-[0px_0px_0px_0px_#ff9b61_inset] hover:translate-y-[2px]',
       },

@@ -14,8 +14,6 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
-import { useWalletSignIn } from '@/hooks/use-wallet-signin';
-
 import { Button } from './ui/button';
 import { WalletIcon } from '@/assets/icons';
 import { MobileMenu, MobileMenuClose, MobileMenuContent, MobileMenuTrigger } from './ui/mobile-menu';
@@ -26,7 +24,6 @@ export const BuddyConnectWalletButton = () => {
   const { publicKey, wallet, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const session = useSession();
-  const { walletSignIn } = useWalletSignIn();
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
 

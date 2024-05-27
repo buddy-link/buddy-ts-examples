@@ -10,8 +10,8 @@ import axios from 'axios';
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: 'consent',
@@ -47,7 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
           let user;
-
+          return { name: credentials.publicKey } as User;
           //TODO: Fix wallet identity creation
           user = await GetUser(axios);
 
@@ -71,7 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // const user: User = { name: credentials.publicKey as string };
 
-          return user as User;
+          return { name: credentials.publicKey } as User;
         } catch (e) {
           //TODO: handle authorize error
           return null;

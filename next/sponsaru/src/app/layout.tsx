@@ -9,6 +9,8 @@ import ReactQueryProvider from '@/providers/react-query-provider';
 import SessionProvider from '@/providers/session-provider';
 import { Toaster } from '@/components/ui/sonner';
 import SignMessageProvider from '@/providers/sign-message-provider';
+import { UserProvider } from '@/providers/user-provider';
+import { cookies } from 'next/headers';
 
 const popins = Poppins({
   subsets: ['latin'],
@@ -25,14 +27,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const googleToken: User.GoogleToken = JSON.parse(cookieStore.get('google_token')?.value || '{}');
   return (
     <html lang="en">
       <body className={cn(popins.className, 'bg-[#FCF4EE] relative mt-24')}>
         <WalletConnectionProvider>
           <SessionProvider>
             <ReactQueryProvider>
-              <Header />
-              {children}
+              <UserProvider googleToken={googleToken}>
+                <Header />
+                {children}
+              </UserProvider>
             </ReactQueryProvider>
             <SignMessageProvider />
           </SessionProvider>
