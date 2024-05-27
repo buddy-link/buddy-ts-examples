@@ -2,7 +2,7 @@ type Node = {
   id: number;
   group: number;
   collapsed: boolean;
-  childLinks: any[];
+  childLinks: Link[];
 };
 
 type Link = {

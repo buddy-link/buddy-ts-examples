@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[129],{82129:function(n,t,e){e.d(t,{CognitoIdentityClient:function(){return u.Q},GetCredentialsForIdentityCommand:function(){return i.L},GetIdCommand:function(){return r.n}});var u=e(71519),i=e(32580),r=e(48270)}}]);

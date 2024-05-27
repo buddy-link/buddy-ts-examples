@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import { serialize } from 'cookie';
 import type { NextApiResponse } from 'next';
 import { cookies } from 'next/headers';
 

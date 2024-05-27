@@ -1,0 +1,28 @@
+{
+  "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentity.js -> ./loadCognitoIdentity": {
+    "id": 82129,
+    "files": [
+      "static/chunks/129.0ea964d45430c05c.js"
+    ]
+  },
+  "../node_modules/@aws-sdk/credential-provider-cognito-identity/dist-es/fromCognitoIdentityPool.js -> ./loadCognitoIdentity": {
+    "id": 82129,
+    "files": [
+      "static/chunks/129.0ea964d45430c05c.js"
+    ]
+  },
+  "../node_modules/@aws-sdk/credential-provider-web-identity/dist-es/fromWebToken.js -> @aws-sdk/client-sts": {
+    "id": 4531,
+    "files": []
+  },
+  "../node_modules/@aws-sdk/credential-providers/dist-es/fromTemporaryCredentials.js -> ./loadSts": {
+    "id": null,
+    "files": []
+  },
+  "components/solo-graph.tsx -> react-force-graph-2d": {
+    "id": 65294,
+    "files": [
+      "static/chunks/294.7d4255faf428300d.js"
+    ]
+  }
+}
