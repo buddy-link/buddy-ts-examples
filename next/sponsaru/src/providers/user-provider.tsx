@@ -47,10 +47,6 @@ export const UserProvider = ({ children, googleToken }: Props) => {
     });
   }, [user.data]);
 
-  if (session.status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
   return <UserContext.Provider value={state}>{children}</UserContext.Provider>;
 };
 

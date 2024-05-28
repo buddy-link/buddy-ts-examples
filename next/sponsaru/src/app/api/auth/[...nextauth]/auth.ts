@@ -6,6 +6,8 @@ import * as nacl from 'tweetnacl';
 import * as bs58 from 'bs58';
 import { CreateUserWalletIdentity, GetUser } from '@/lib/auth';
 import axios from 'axios';
+import useAuthReq from '@/hooks/use-auth-request';
+import aws4Interceptor from 'aws4-axios';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -47,12 +49,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
           let user;
-          return { name: credentials.publicKey } as User;
+          // return { name: credentials.publicKey } as User;
           //TODO: Fix wallet identity creation
-          user = await GetUser(axios);
+
+          const request = axios.create();
+
+          // const config = request.interceptors.request.use(async (config) => {
+          //   // if (userContext.credentials === null) {
+          //   //   return config;
+          //   // }
+
+          //   aws4Interceptor({
+          //     options: {
+          //       service: 'execute-api',
+          //       region: process.env.NEXT_PUBLIC_AWS_REGION!,
+          //     },
+          //     credentials: {
+          //       accessKeyId: userContext.credentials.AccessKeyId!,
+          //       secretAccessKey: userContext.credentials.SecretKey!,
+          //       sessionToken: userContext.credentials.SessionToken!,
+          //     },
+          //   })(config);
+
+          //   return config;
+          // });
+
+          user = await GetUser(request);
 
           if (user.error) {
-            user = await CreateUserWalletIdentity(axios, {
+            user = await CreateUserWalletIdentity(request, {
               walletPublicKey: credentials.publicKey as string,
               primary: true,
             });
