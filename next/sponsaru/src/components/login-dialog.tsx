@@ -72,11 +72,11 @@ const LoginDialog = () => {
 
         {isAuthenticated ? (
           <div className="flex flex-col  justify-center py-6 gap-4 px-6">
-            <DialogClose asChild>
+            {/* <DialogClose asChild>
               <Button variant="primary" type="button" className="" onClick={changeWallet}>
                 Change Wallet
               </Button>
-            </DialogClose>
+            </DialogClose> */}
             <DialogClose asChild>
               <Button variant="primary" className="text-white gap-2 px-6 py-4" onClick={logout}>
                 Logout

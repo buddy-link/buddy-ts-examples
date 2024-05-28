@@ -16,6 +16,7 @@ import { MouseCoords } from 'sigma/types';
 import { SoloPopover } from './solo-popover';
 import SoloGraph2 from './solo-graph2';
 import { useQuests } from '@/hooks/use-quests';
+import useUser from '@/hooks/use-user';
 
 const DEFAULT_ARGS = {
   order: 80,
@@ -40,6 +41,10 @@ const Chart = () => {
 
   const { data: questsData, isLoading: isQuestsDataLoading } = useQuests();
   const { data: teamsData, isLoading: isTeamsDataLoading } = useTeams();
+
+  const { user } = useUser(true);
+
+  console.log(user.data);
 
   console.log('questsData', questsData);
 

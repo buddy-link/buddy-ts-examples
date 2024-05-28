@@ -8,21 +8,6 @@ import { Team } from './chart';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Skeleton } from './ui/skeleton';
 
-const notifications = [
-  {
-    title: 'Your call has been confirmed.',
-    description: '1 hour ago',
-  },
-  {
-    title: 'You have a new message!',
-    description: '1 hour ago',
-  },
-  {
-    title: 'Your subscription is expiring soon!',
-    description: '2 hours ago',
-  },
-];
-
 type LeaderboardProps = {
   teamsData: Team[];
   isLoading: boolean;
@@ -49,7 +34,7 @@ const Leaderboard = ({ teamsData, isLoading }: LeaderboardProps) => {
             {isLoading ? (
               <LoadingLeaderboard />
             ) : (
-              teamsData.map((team, index) => (
+              teamsData.slice(0, 5).map((team, index) => (
                 <CardContent
                   key={team.id}
                   className="space-y-2 flex flex-row gap-3 items-center justify-between p-0 h-full"
@@ -102,7 +87,7 @@ const Leaderboard = ({ teamsData, isLoading }: LeaderboardProps) => {
             {isLoading ? (
               <LoadingLeaderboard />
             ) : (
-              [1, 2, 3, 4, 5].map((member, index) => (
+              [1, 2, 3, 4, 5].slice(0, 5).map((member, index) => (
                 <CardContent key={index} className="space-y-2 flex flex-row gap-3 items-center justify-between p-0">
                   <div className="flex gap-5 items-center justify-center">
                     <Avatar className="object-fit h-12 w-12 items-center justify-center relative overflow-visible">
