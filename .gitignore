@@ -9,7 +9,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-./next/*/node_modules
+**/node_modules
+**/.env
+**/.next
+
 
 node_modules
 dist
