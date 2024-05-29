@@ -14,6 +14,7 @@ import CircularProgressBar from './circular-progress-bar';
 import { cn } from '@/lib/utils';
 import { Team } from './chart';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import CreateTeamDialog from './create-team-dialog';
 
 type TeamsDialogProps = {
   teams: Team[];
@@ -40,61 +41,72 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
           </ul>
         </DialogDescription>
 
-        <div className="grid grid-cols-3 gap-5">
-          {teams.map((team, index) => (
-            <div
-              key={index}
-              className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm"
-            >
-              <div className="flex gap-2 items-center justify-center">
-                <div className="flex flex-col items-start justify-center whitespace-nowrap">
-                  <div className="text-light-primary font-bold">
-                    {team.id.length >= 13 ? (
-                      <TooltipProvider delayDuration={300}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="cursor-pointer">{team.id.slice(0, 10)}...</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p> {team.id}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ) : (
-                      team.id
-                    )}
-                  </div>
-                  <p className="text-[0.625rem]">
-                    points:
-                    <span className="ml-1">
-                      {team.points.toLocaleString('en-US', {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                      })}
-                    </span>
-                  </p>
-                </div>
-                <div className="flex flex-col items-center justify-center whitespace-nowrap">
-                  <span className="text-light-primary font-bold">Members</span>
+        <div className="flex flex-col gap-3">
+          <CreateTeamDialog />
 
-                  <span className="text-[0.625rem]">
-                    {team.members.toLocaleString('en-US', {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
-                  </span>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[65vh] lg:max-h-[35vh]">
+              {teams.map((team, index) => (
+                <div
+                  key={index}
+                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm"
+                >
+                  <div className="flex gap-2 items-center justify-center">
+                    <div className="flex flex-col items-start justify-center whitespace-nowrap">
+                      <div className="text-light-primary font-bold">
+                        {team.id.length >= 13 ? (
+                          <TooltipProvider delayDuration={300}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-pointer">{team.id.slice(0, 10)}...</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p> {team.id}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ) : (
+                          team.id
+                        )}
+                      </div>
+                      <p className="text-[0.625rem]">
+                        points:
+                        <span className="ml-1">
+                          {team.points.toLocaleString('en-US', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center whitespace-nowrap">
+                      <span className="text-light-primary font-bold">Members</span>
+
+                      <span className="text-[0.625rem]">
+                        {team.members.toLocaleString('en-US', {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant={index === 1 ? 'destructive' : 'primary'}
+                    className={cn('text-white gap-2 px-6 py-4 ')}
+                  >
+                    {index === 1 ? 'Leave' : 'Join'}
+                  </Button>
                 </div>
-              </div>
-              <Button variant={index === 1 ? 'destructive' : 'primary'} className={cn('text-white gap-2 px-6 py-4 ')}>
-                {index === 1 ? 'Leave' : 'Join'}
-              </Button>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="primary">Close</Button>
+            <Button variant="destructive">Close</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -51,7 +51,7 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-screen-lg">
+      <DialogContent className="max-w-96 sm:max-w-screen-sm lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="font-bold text-5xl">Quests</DialogTitle>
         </DialogHeader>
@@ -64,11 +64,11 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[65vh] lg:max-h-[35vh]">
               {quests.map((quest, index) => (
                 <div
                   key={index}
-                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex justify-between gap-6 p-[0.625rem]"
+                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex justify-between gap-6 p-[0.625rem] w-[300px]"
                 >
                   <div className="flex gap-2 items-center justify-center">
                     <CircularProgressBar percentage={70} text={100} />

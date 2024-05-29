@@ -18,10 +18,12 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useCreateQuest } from '@/hooks/use-quests';
+import { useSession } from 'next-auth/react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: 'Name must be at least 2 characters.',
   }),
   config: z.object({
     pointValue: z.number().int(),
@@ -32,7 +34,9 @@ const formSchema = z.object({
     repeatLimit: z.number().int(),
   }),
   image: z.string(),
-  displayName: z.string(),
+  displayName: z.string().min(2, {
+    message: 'Display Name must be at least 2 characters.',
+  }),
   owner: z.string(),
   trigger: z.object({
     type: z.string(),
@@ -44,9 +48,8 @@ const formSchema = z.object({
 export type CreateQuest = z.infer<typeof formSchema>;
 
 const CreateQuestDialog = () => {
+  const session = useSession();
   const { data, mutate } = useCreateQuest();
-
-  console.log('quest', data);
 
   const form = useForm<CreateQuest>({
     resolver: zodResolver(formSchema),
@@ -72,15 +75,19 @@ const CreateQuestDialog = () => {
   });
 
   async function onSubmit(values: CreateQuest) {
-    await mutate(values);
+    mutate(values);
     console.log(values);
   }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button" variant="primary" className="text-white gap-2 px-6 py-4">
-          Create
+        <Button
+          type="button"
+          variant="primary"
+          className={cn('w-fit px-6 py-4', session.status !== 'authenticated' && 'hidden')}
+        >
+          Create Quest
         </Button>
       </DialogTrigger>
 
@@ -91,7 +98,7 @@ const CreateQuestDialog = () => {
         <DialogDescription className="font-bold">&gt; Create a quest</DialogDescription>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-4 gap-2 w-full">
               <FormField
                 control={form.control}
@@ -125,19 +132,6 @@ const CreateQuestDialog = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="owner"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Owner</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -243,15 +237,21 @@ const CreateQuestDialog = () => {
                 )}
               />
             </div>
-            <Button type="submit">Submit</Button>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button type="button" variant="destructive">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
           </form>
         </Form>
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="primary">Close</Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

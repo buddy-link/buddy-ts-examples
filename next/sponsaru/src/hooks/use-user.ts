@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import useAuthReq from './use-auth-request';
-import { useCallback } from 'react';
 
 const authAPI = process.env.NEXT_PUBLIC_BUDDYLINK_AUTH_API_URL;
 
