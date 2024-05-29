@@ -30,7 +30,7 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-screen-lg">
+      <DialogContent className="max-w-96 sm:max-w-screen-sm lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="font-bold text-5xl">Teams</DialogTitle>
         </DialogHeader>
