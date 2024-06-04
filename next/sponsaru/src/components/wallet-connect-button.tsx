@@ -19,11 +19,18 @@ import { WalletIcon } from '@/assets/icons';
 import { MobileMenu, MobileMenuClose, MobileMenuContent, MobileMenuTrigger } from './ui/mobile-menu';
 import { DialogTrigger } from './ui/dialog';
 import { SignMessageButton } from './sign-message-button';
+import { CreateUserWalletIdentity } from '@/lib/auth';
+import useAuthReq from '@/hooks/use-auth-request';
+import useUser from '@/hooks/use-user';
 
 export const BuddyConnectWalletButton = () => {
-  const { publicKey, wallet, disconnect } = useWallet();
+  const { publicKey, wallet, disconnect, connected } = useWallet();
   const { setVisible } = useWalletModal();
   const session = useSession();
+  const authReq = useAuthReq();
+  const { user } = useUser(true);
+
+  console.log(publicKey?.toBase58());
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
@@ -31,7 +38,7 @@ export const BuddyConnectWalletButton = () => {
     return truncateString(publicKey?.toBase58() ?? '');
   }, [publicKey]);
 
-  const disconnectWallet = useCallback(async () => {
+  const logout = useCallback(async () => {
     await disconnect();
     await signOut({
       redirect: false,
@@ -67,8 +74,8 @@ export const BuddyConnectWalletButton = () => {
           </Button>
         </DialogTrigger>
         <DialogTrigger asChild>
-          <Button variant="primary" type="button" className="" onClick={disconnectWallet}>
-            Logout
+          <Button variant="primary" type="button" className="" onClick={async () => await disconnect()}>
+            Disconnect Wallet
           </Button>
         </DialogTrigger>
       </>
@@ -97,7 +104,7 @@ export const BuddyConnectWalletButton = () => {
                 variant="outline"
                 type="button"
                 className="w-full outline-0 ring-0 hover:bg-primary  focus-visible:ring-0 focus-visible:ring-offset-0"
-                onClick={disconnectWallet}
+                onClick={logout}
               >
                 Logout
               </Button>

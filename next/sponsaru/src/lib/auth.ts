@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 
-const AuthAPI = `https://${process.env.NEXT_PUBLIC_BUDDYLINK_AUTH_API_URL}`;
+const authAPI = process.env.NEXT_PUBLIC_BUDDYLINK_AUTH_API_URL;
 
 type GetUserResponse = {
   query_time: string;
@@ -24,7 +24,7 @@ type GetUserResponse = {
 //https://{{auth-API-Address}}/user
 export async function GetUser(axios: AxiosInstance): Promise<GetUserResponse> {
   try {
-    const resp = await axios.get(`${AuthAPI}/user`);
+    const resp = await axios.get(`${authAPI}/user`);
     return resp.data;
   } catch (error) {
     console.error(error);
@@ -56,7 +56,7 @@ export async function CreateUserEmailIdentity(
   body: CreateUserEmailIdentity
 ): Promise<CreateUserEmailIdentityResponse> {
   try {
-    const resp = await axios.post(`${AuthAPI}/user/identities/email`, body);
+    const resp = await axios.post(`${authAPI}/user/identities/email`, body);
     return resp.data;
   } catch (error) {
     console.error(error);
@@ -86,7 +86,7 @@ export async function RemoveUserEmailIdentity(
   body: RemoveUserEmailIdentity
 ): Promise<RemoveUserEmailIdentityResponse> {
   try {
-    const resp = await axios.post(`${AuthAPI}/user/identities/email/remove`, body);
+    const resp = await axios.post(`${authAPI}/user/identities/email/remove`, body);
     return resp.data;
   } catch (error) {
     console.error(error);
@@ -117,7 +117,7 @@ export async function CreateUserWalletIdentity(
   body: CreateUserWalletIdentity
 ): Promise<CreateUserWalletIdentityResponse> {
   try {
-    const resp = await axios.post(`${AuthAPI}/user/identities/wallet`, body);
+    const resp = await axios.post(`${authAPI}/user/identities/wallet`, body);
     return resp.data;
   } catch (error) {
     console.error(error);
@@ -147,7 +147,7 @@ export async function RemoveUserWalletIdentity(
   body: RemoveUserWalletIdentity
 ): Promise<RemoveUserWalletIdentityResponse> {
   try {
-    const resp = await axios.post(`${AuthAPI}/user/identities/wallet/remove`, body);
+    const resp = await axios.post(`${authAPI}/user/identities/wallet/remove`, body);
     return resp.data;
   } catch (error) {
     console.error(error);

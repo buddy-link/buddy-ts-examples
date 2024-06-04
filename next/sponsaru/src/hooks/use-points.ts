@@ -19,7 +19,6 @@ export const usePoints = () =>
       return axios
         .request(config)
         .then((response) => {
-          console.log('useTeams: ', response.data);
           return response.data;
         })
         .catch((error) => {

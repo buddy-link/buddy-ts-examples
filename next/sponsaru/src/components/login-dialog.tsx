@@ -15,15 +15,19 @@ import {
 import { BuddyConnectWalletButton } from './wallet-connect-button';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useCallback, useMemo } from 'react';
+import { use, useCallback, useEffect, useMemo, useState } from 'react';
 import { truncateString } from '@/utils/truncate';
 import { cn } from '@/lib/utils';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import useUser from '@/hooks/use-user';
 
 const LoginDialog = () => {
   const session = useSession();
+  const { user } = useUser(true);
   const wallet = useWallet();
   const { setVisible } = useWalletModal();
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   const truncatedWalletAddress = useMemo(() => {
     return truncateString(session?.data?.user?.name ?? wallet.publicKey?.toBase58() ?? '');
@@ -43,10 +47,16 @@ const LoginDialog = () => {
     await signOut({ redirect: false });
   }, [wallet]);
 
-  console.log('session: ', session);
+  useEffect(() => {
+    if (user.data && user.data.walletIdentities.length === 0) return setOpenDialog(true);
+
+    setOpenDialog(false);
+  }, [user.data]);
+
+  console.log('session', user);
 
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <Button type="button" variant="primary" className="gap-2 px-6 py-4">
           {session?.status === 'loading' || wallet.connecting
@@ -72,6 +82,7 @@ const LoginDialog = () => {
 
         {isAuthenticated ? (
           <div className="flex flex-col  justify-center py-6 gap-4 px-6">
+            {user.data && <BuddyConnectWalletButton />}
             {/* <DialogClose asChild>
               <Button variant="primary" type="button" className="" onClick={changeWallet}>
                 Change Wallet
@@ -85,7 +96,6 @@ const LoginDialog = () => {
           </div>
         ) : (
           <div className="flex flex-col  justify-center py-6 gap-4 px-6">
-            <BuddyConnectWalletButton />
             {session?.status === 'unauthenticated' && (
               <Button variant="primary" className="text-white gap-2 px-6 py-4" onClick={() => signIn('google')}>
                 Sign In with Google

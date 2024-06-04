@@ -76,7 +76,6 @@ const CreateQuestDialog = () => {
 
   async function onSubmit(values: CreateQuest) {
     mutate(values);
-    console.log(values);
   }
 
   return (

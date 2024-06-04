@@ -5,9 +5,12 @@ import { useCallback } from 'react';
 import { sign } from 'tweetnacl';
 import * as bs58 from 'bs58';
 import { toast } from 'sonner';
+import { CreateUserWalletIdentity } from '@/lib/auth';
+import useAuthReq from './use-auth-request';
 
 export const useWalletSignIn = () => {
   const { publicKey, signMessage, wallet } = useWallet();
+  const authReq = useAuthReq();
 
   const walletSignIn = useCallback(async () => {
     try {
@@ -28,13 +31,20 @@ export const useWalletSignIn = () => {
       // Verify that the bytes were signed using the private key that matches the known public key
       if (!sign.detached.verify(message, signature, publicKey.toBytes())) throw new Error('Invalid signature!');
 
-      console.log('aqui');
-
-      await signIn('credentials', {
-        redirect: false,
-        publicKey: publicKey,
-        signature: bs58.encode(signature),
+      const walletIdentity = await CreateUserWalletIdentity(authReq, {
+        walletPublicKey: publicKey.toBase58(),
+        primary: true,
       });
+
+      console.log('walletIdentity', walletIdentity);
+
+      return;
+
+      // await signIn('credentials', {
+      //   redirect: false,
+      //   publicKey: publicKey,
+      //   signature: bs58.encode(signature),
+      // });
     } catch (error) {
       toast(`Signing failed:`, {
         //@ts-expect-error TODO: fix this type error

@@ -40,8 +40,6 @@ type QuestsDialogProps = {
 };
 
 const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
-  console.log('quests', quests);
-
   return (
     <Dialog>
       <DialogTrigger asChild>

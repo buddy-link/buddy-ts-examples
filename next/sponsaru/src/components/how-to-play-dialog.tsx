@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import GoAnimation from './go-animation';
 import { DialogOverlay } from '@radix-ui/react-dialog';
+import useUser from '@/hooks/use-user';
 
 const sections = [
   {
@@ -34,10 +35,12 @@ const sections = [
 const HowToPlayDialog = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openAnimation, setOpenAnimation] = useState(false);
+  const { user } = useUser(true);
 
   useEffect(() => {
+    if (user.data && user.data.walletIdentities.length === 0) return setOpenDialog(false);
     setOpenDialog(true);
-  }, []);
+  }, [user.data]);
 
   const onOpenChange = useCallback((open: boolean) => {
     setOpenDialog(open);

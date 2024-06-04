@@ -42,7 +42,6 @@ const CreateTeamDialog = () => {
 
   async function onSubmit(values: CreateTeam) {
     await mutate(values);
-    console.log(values);
   }
 
   return (

@@ -23,86 +23,86 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
 
-    CredentialsProvider({
-      name: 'solana',
-      credentials: {
-        publicKey: { type: 'text' },
-        signature: { type: 'text' },
-      },
+    // CredentialsProvider({
+    //   name: 'solana',
+    //   credentials: {
+    //     publicKey: { type: 'text' },
+    //     signature: { type: 'text' },
+    //   },
 
-      async authorize(credentials) {
-        console.log('credentials: ', credentials);
+    //   async authorize(credentials) {
+    //     console.log('credentials: ', credentials);
 
-        if (!credentials) return null;
-        try {
-          const cookieStore = cookies();
-          const nonce = cookieStore.get('authNonce');
+    //     if (!credentials) return null;
+    //     try {
+    //       const cookieStore = cookies();
+    //       const nonce = cookieStore.get('authNonce');
 
-          console.log(`nonce: ${nonce?.value}`);
+    //       console.log(`nonce: ${nonce?.value}`);
 
-          const message = `Sign this message: ${nonce?.value}`;
-          const messageBytes = new TextEncoder().encode(message);
+    //       const message = `Sign this message: ${nonce?.value}`;
+    //       const messageBytes = new TextEncoder().encode(message);
 
-          const publicKeyBytes = bs58.decode(credentials.publicKey as string);
-          const signatureBytes = bs58.decode(credentials.signature as string);
+    //       const publicKeyBytes = bs58.decode(credentials.publicKey as string);
+    //       const signatureBytes = bs58.decode(credentials.signature as string);
 
-          const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+    //       const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
-          let user;
-          // return { name: credentials.publicKey } as User;
-          //TODO: Fix wallet identity creation
+    //       let user;
+    //       // return { name: credentials.publicKey } as User;
+    //       //TODO: Fix wallet identity creation
 
-          const request = axios.create();
+    //       const request = axios.create();
 
-          // const config = request.interceptors.request.use(async (config) => {
-          //   // if (userContext.credentials === null) {
-          //   //   return config;
-          //   // }
+    //       // const config = request.interceptors.request.use(async (config) => {
+    //       //   // if (userContext.credentials === null) {
+    //       //   //   return config;
+    //       //   // }
 
-          //   aws4Interceptor({
-          //     options: {
-          //       service: 'execute-api',
-          //       region: process.env.NEXT_PUBLIC_AWS_REGION!,
-          //     },
-          //     credentials: {
-          //       accessKeyId: userContext.credentials.AccessKeyId!,
-          //       secretAccessKey: userContext.credentials.SecretKey!,
-          //       sessionToken: userContext.credentials.SessionToken!,
-          //     },
-          //   })(config);
+    //       //   aws4Interceptor({
+    //       //     options: {
+    //       //       service: 'execute-api',
+    //       //       region: process.env.NEXT_PUBLIC_AWS_REGION!,
+    //       //     },
+    //       //     credentials: {
+    //       //       accessKeyId: userContext.credentials.AccessKeyId!,
+    //       //       secretAccessKey: userContext.credentials.SecretKey!,
+    //       //       sessionToken: userContext.credentials.SessionToken!,
+    //       //     },
+    //       //   })(config);
 
-          //   return config;
-          // });
+    //       //   return config;
+    //       // });
 
-          user = await GetUser(request);
+    //       user = await GetUser(request);
 
-          if (user.error) {
-            user = await CreateUserWalletIdentity(request, {
-              walletPublicKey: credentials.publicKey as string,
-              primary: true,
-            });
+    //       if (user.error) {
+    //         user = await CreateUserWalletIdentity(request, {
+    //           walletPublicKey: credentials.publicKey as string,
+    //           primary: true,
+    //         });
 
-            console.log(`user: ${user.walletPublicKey}`);
-          }
+    //         console.log(`user: ${user.walletPublicKey}`);
+    //       }
 
-          console.log(`user: ${user.error}`);
+    //       console.log(`user: ${user.error}`);
 
-          console.log(`result: ${result}`);
+    //       console.log(`result: ${result}`);
 
-          if (!result) {
-            console.log(`authentication failed`);
-            throw new Error('user can not be authenticated');
-          }
+    //       if (!result) {
+    //         console.log(`authentication failed`);
+    //         throw new Error('user can not be authenticated');
+    //       }
 
-          // const user: User = { name: credentials.publicKey as string };
+    //       // const user: User = { name: credentials.publicKey as string };
 
-          return { name: credentials.publicKey } as User;
-        } catch (e) {
-          //TODO: handle authorize error
-          return null;
-        }
-      },
-    }),
+    //       return { name: credentials.publicKey } as User;
+    //     } catch (e) {
+    //       //TODO: handle authorize error
+    //       return null;
+    //     }
+    //   },
+    // }),
   ],
   secret: process.env.AUTH_SECRET!,
   callbacks: {

@@ -51,7 +51,7 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
               {teams.map((team, index) => (
                 <div
                   key={index}
-                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm"
+                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm w-[300px]"
                 >
                   <div className="flex gap-2 items-center justify-center">
                     <div className="flex flex-col items-start justify-center whitespace-nowrap">

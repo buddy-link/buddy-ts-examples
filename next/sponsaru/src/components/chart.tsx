@@ -44,10 +44,6 @@ const Chart = () => {
 
   const { user } = useUser(true);
 
-  console.log(user.data);
-
-  console.log('questsData', questsData);
-
   const teams = useMemo(() => {
     if (!teamsData || isTeamsDataLoading) return [];
     return teamsData.groups.map((team: { group_name: string; total_members: string; total_points: string }) => ({
@@ -64,12 +60,9 @@ const Chart = () => {
     return questsData;
   }, [isQuestsDataLoading, questsData]);
 
-  console.log('teams', teams);
-
   const handleTeamNodeClick = useCallback(
     (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => {
       const nodeAttributes = graph.getNodeAttributes(node);
-      console.log('nodeAttributes', nodeAttributes);
 
       setSelectedTeamNode({
         id: node,
@@ -134,7 +127,7 @@ const Chart = () => {
           )}
 
           <div className="absolute top-4 left-4 z-40">
-            <HowToPlayDialog />
+            {!user.isLoading && user.data.walletIdentities.length === 0 && <HowToPlayDialog />}
           </div>
           <TabsContent value="team" className="h-full">
             <TeamsGraph onNodeClick={handleTeamNodeClick} nodes={teams} isLoading={isTeamsDataLoading} />

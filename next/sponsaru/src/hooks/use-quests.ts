@@ -48,8 +48,6 @@ export const useCreateQuest = () => {
         },
       };
 
-      console.log('useCreateQuest: ', values);
-
       const config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -64,7 +62,6 @@ export const useCreateQuest = () => {
       return axios
         .request(config)
         .then((response) => {
-          console.log('useCreateQuest: ', response.data);
           return response.data;
         })
         .catch((error) => {

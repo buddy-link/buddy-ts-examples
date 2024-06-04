@@ -15,7 +15,7 @@ export const useTeams = () => {
         headers: {
           // user_id: user.data.emailIdentities[0].userId,
           Accept: 'application/json',
-          // 'x-api-key': 'z3RLMDSix54as3nOtaP1cawy9fhykGsc581JPLSs',
+          'x-api-key': process.env.NEXT_PUBLIC_GROUPS_API_KEY,
         },
       };
 
@@ -48,7 +48,7 @@ export const useCreateTeam = () => {
         headers: {
           user_id: user.data.emailIdentities[0].userId,
           Accept: 'application/json',
-          // 'x-api-key': 'z3RLMDSix54as3nOtaP1cawy9fhykGsc581JPLSs',
+          'x-api-key': process.env.NEXT_PUBLIC_GROUPS_API_KEY,
         },
         data: values,
       };
