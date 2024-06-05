@@ -1,7 +1,8 @@
 import { CreateQuest } from '@/components/create-quest-dialog';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import useUser from './use-user';
+import { getQueryClient } from '@/providers/react-query-provider';
 
 export const useQuests = () =>
   useQuery({
@@ -16,20 +17,15 @@ export const useQuests = () =>
         },
       };
 
-      return axios
-        .request(config)
-        .then((response) => {
-          return response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      return axios.request(config).then((response) => {
+        return response.data;
+      });
     },
   });
 
 export const useCreateQuest = () => {
   const { user } = useUser(true);
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
 
   return useMutation({
     mutationKey: ['create-quest'],

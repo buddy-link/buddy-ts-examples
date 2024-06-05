@@ -1,8 +1,9 @@
 import { CreateTeam } from '@/components/create-team-dialog';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import useUser from './use-user';
 import { toast } from 'sonner';
+import { getQueryClient } from '@/providers/react-query-provider';
 
 export const useTeams = () => {
   const { user } = useUser(true);
@@ -34,7 +35,7 @@ export const useTeams = () => {
 
 export const useCreateTeam = () => {
   const { user } = useUser(true);
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
 
   return useMutation({
     mutationKey: ['teams'],

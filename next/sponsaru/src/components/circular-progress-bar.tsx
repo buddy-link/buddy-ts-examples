@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface CircularProgressBarProps {
   percentage: number;
@@ -7,6 +7,7 @@ interface CircularProgressBarProps {
   strokeWidth?: number;
   text: string | number;
   className?: string;
+  completed?: boolean;
 }
 
 const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
@@ -15,18 +16,23 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   strokeWidth = 4,
   text = 100,
   className = '',
+  completed = false,
 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
+  const color = completed ? '#4ade80' : '#EA5455';
+  const color2 = completed ? '#78f1a4' : '#FEB692';
+
+  const gradientId = useMemo(() => `gradient-${Math.random()}`, []);
 
   return (
     <div className="relative flex items-center justify-center">
       <svg width={size} height={size} className={cn('transform rotate-[-90deg]', className)}>
         <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: '#EA5455', stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: ' #FEB692', stopOpacity: 1 }} />
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: color2, stopOpacity: 1 }} />
           </linearGradient>
         </defs>
         <circle
@@ -39,8 +45,7 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
           r={radius}
         />
         <circle
-          className="text-orange-500"
-          stroke="url(#gradient)"
+          stroke={`url(#${gradientId})`}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           fill="none"
@@ -52,7 +57,7 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
           style={{ transition: 'stroke-dashoffset 0.5s ease' }}
         />
       </svg>
-      <span className="absolute text-sm font-bold text-light-primary">{text}</span>
+      <span className={cn('absolute text-sm font-bold text-light-primary', completed && 'text-green-400')}>{text}</span>
     </div>
   );
 };

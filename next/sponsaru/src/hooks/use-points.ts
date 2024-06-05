@@ -1,12 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import useUser from './use-user';
+import { getQueryClient } from '@/providers/react-query-provider';
 
 export type CreditPoints = {
   value: number;
   reason: string;
 };
 
+export type HistoryEntry = {
+  created_at: string;
+  reason: string;
+  source: string;
+  value: number;
+};
 export const useTopUsers = () =>
   useQuery({
     queryKey: ['top-users'],
@@ -45,8 +52,8 @@ export const useTopGroups = () =>
     },
   });
 
-export const usePoints = () => {
-  const queryClient = useQueryClient();
+export const useCreditPoints = () => {
+  const queryClient = getQueryClient();
   const { user } = useUser(true);
 
   return useMutation({
@@ -74,6 +81,27 @@ export const usePoints = () => {
       await queryClient.invalidateQueries({
         queryKey: ['points'],
         refetchType: 'active',
+      });
+    },
+  });
+};
+
+export const useUserPointsHistory = () => {
+  const { user } = useUser(true);
+
+  return useQuery({
+    queryKey: ['points-history'],
+    queryFn: async () => {
+      const config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + `/points/user/${user.data.emailIdentities[0].userId}`,
+        headers: {
+          Accept: 'application/json',
+        },
+      };
+      return axios.request(config).then((response) => {
+        return response.data;
       });
     },
   });

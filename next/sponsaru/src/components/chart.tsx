@@ -5,7 +5,7 @@ import Graph from 'graphology';
 import { Attributes } from 'graphology-types';
 import { NodeData, Position } from './types';
 import Leaderboard from './leaderboard';
-import QuestsDialog from './quests-dialog';
+import QuestsDialog, { Quest } from './quests-dialog';
 import TeamsDialog from './teams-dialog';
 import HowToPlayDialog from './how-to-play-dialog';
 import { TeamPopover } from './team-popover';
@@ -17,6 +17,7 @@ import { SoloPopover } from './solo-popover';
 import SoloGraph2 from './solo-graph2';
 import { useQuests } from '@/hooks/use-quests';
 import useUser from '@/hooks/use-user';
+import { HistoryEntry, useUserPointsHistory } from '@/hooks/use-points';
 
 const DEFAULT_ARGS = {
   order: 40,
@@ -40,7 +41,10 @@ const Chart = () => {
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
   const { data: questsData, isLoading: isQuestsDataLoading } = useQuests();
+  const { data: userPoints, isLoading: isUserPointsLoading } = useUserPointsHistory();
   const { data: teamsData, isLoading: isTeamsDataLoading } = useTeams();
+
+  console.log('userpoints:', userPoints);
 
   const { user } = useUser(true);
 
@@ -55,10 +59,22 @@ const Chart = () => {
     }));
   }, [isTeamsDataLoading, teamsData]);
 
-  const quests = useMemo(() => {
-    if (!questsData || isQuestsDataLoading) return [];
-    return questsData;
-  }, [isQuestsDataLoading, questsData]);
+  const quests = useMemo<Quest[]>(() => {
+    if (!questsData || isQuestsDataLoading || isUserPointsLoading || !userPoints) return [];
+    const completedQuests = new Set<string>();
+
+    userPoints.history.forEach((entry: HistoryEntry) => {
+      const questName = entry.source.split('_')[1]; // Assumes source follows a certain pattern, adjust if needed
+      completedQuests.add(questName);
+    });
+
+    return questsData.map((quest: Quest) => {
+      if (completedQuests.has(quest.name)) {
+        return { ...quest, status: 'completed' };
+      }
+      return quest;
+    });
+  }, [isQuestsDataLoading, isUserPointsLoading, questsData, userPoints]);
 
   const handleTeamNodeClick = useCallback(
     (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => {
@@ -140,7 +156,7 @@ const Chart = () => {
             <Leaderboard teamsData={teams} isLoading={isTeamsDataLoading} />
           </div>
           <div className="absolute bottom-4 left-4 flex gap-4 items-center justify-start">
-            <QuestsDialog quests={quests} isLoading={isQuestsDataLoading} />
+            <QuestsDialog quests={quests} isLoading={isQuestsDataLoading || isUserPointsLoading} />
             <TeamsDialog teams={teams} isLoading={isTeamsDataLoading} />
           </div>
         </div>

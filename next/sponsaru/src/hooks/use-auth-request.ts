@@ -9,6 +9,8 @@ const authReq = axios.create();
 const useAuthReq = () => {
   const userContext = useContext(UserContext);
 
+  console.log('userContext', userContext);
+
   useEffect(() => {
     if (!userContext.credentials) {
       return;
