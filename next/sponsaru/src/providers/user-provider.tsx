@@ -9,7 +9,7 @@ import { createContext } from 'react';
 import { Credentials } from '@aws-sdk/client-cognito-identity';
 import useUser from '@/hooks/use-user';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CreateUserWalletIdentity } from '@/lib/auth';
+import { CreateUserEmailIdentity, CreateUserWalletIdentity } from '@/lib/auth';
 import useAuthReq from '@/hooks/use-auth-request';
 
 interface Props extends PropsWithChildren {
@@ -33,33 +33,44 @@ export const UserProvider = ({ children, googleToken }: Props) => {
   const { publicKey, connected } = useWallet();
   const authReq = useAuthReq();
 
+  useUpdateCognitoCredentials({
+    googleToken: googleToken,
+    setState,
+  });
+
+  const handleEmailIdentityCreate = useCallback(async () => {
+    if (session.status !== 'authenticated') return;
+    if (!session.data.user) return;
+    if (!session.data.user.email) return;
+
+    const emailIdentity = await CreateUserEmailIdentity(authReq, {
+      email: session.data.user.email,
+      primary: true,
+    });
+    return emailIdentity;
+  }, [authReq, session.data?.user, session.status]);
+
   const handleWalletIdentityCreate = useCallback(async () => {
     console.log('handleWalletIdentityCreate');
     if (session.status !== 'authenticated') return;
     if (!publicKey) return;
     if (!user.data) return;
-    if (
-      user.data.walletIdentities.find(
-        (wallet: { walletPublicKey: string }) => wallet.walletPublicKey === publicKey.toBase58()
-      )
-    ) {
-      return;
-    }
+
     console.log('handleWalletIdentityCreate2');
     const walletIdentity = await CreateUserWalletIdentity(authReq, {
       walletPublicKey: publicKey.toBase58(),
-      primary: user.data.walletIdentities.length === 0,
+      primary: true,
     });
     return walletIdentity;
   }, [authReq, publicKey, session.status, user.data]);
 
   useEffect(() => {
+    handleEmailIdentityCreate();
+  }, [handleEmailIdentityCreate, session.status]);
+
+  useEffect(() => {
     handleWalletIdentityCreate();
   }, [handleWalletIdentityCreate, connected]);
-  useUpdateCognitoCredentials({
-    googleToken: googleToken,
-    setState,
-  });
 
   useEffect(() => {
     setState((prevState) => {

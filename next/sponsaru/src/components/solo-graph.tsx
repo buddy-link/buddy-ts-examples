@@ -44,7 +44,7 @@ type SoloGraphProps = {
 
 const SoloGraph = ({ handleNodeClick }: SoloGraphProps) => {
   const N = 2000;
-  const numberOfGroups = 17;
+  const numberOfGroups = 1;
   const gData = useMemo(() => generateGraphData(N, numberOfGroups), [N, numberOfGroups]);
 
   const getAllNodesAndLinks = useCallback(() => {

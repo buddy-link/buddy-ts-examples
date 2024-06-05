@@ -1,7 +1,7 @@
 import { NodeImageProgram } from '@sigma/node-image';
 import Graph from 'graphology';
 
-import { useEffect, Attributes, useState } from 'react';
+import { useEffect, Attributes } from 'react';
 import Sigma from 'sigma';
 import { NodeData, Position } from './types';
 import { MouseCoords } from 'sigma/types';
@@ -34,11 +34,11 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
         } else {
           position = getNextPosition(prevPosition, prevSize, node.members);
           prevPosition = position;
-          prevSize = node.points >= 40 ? node.points / 4 : 10;
+          prevSize = node.points >= 1000 ? node.points / 1000 : 10;
         }
         graph.addNode(node.id, {
           ...position,
-          size: node.points >= 40 ? node.points / 4 : 10,
+          size: node.points >= 1000 ? node.points / 1000 : 10,
           image: node.image,
           hiddenLabel: node.label,
           originalLabel: node.label,
@@ -78,7 +78,8 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
 export default TeamsGraph;
 
 const getNextPosition = (prevPosition: Position, prevSize: number, currSize: number): Position => {
-  const distance = (prevSize + currSize) / 40;
+  const distanceMultiplier = 10; // Aumentar significativamente o multiplicador de distância
+  const distance = ((prevSize + currSize) * distanceMultiplier) / 40;
   const angle = Math.random() * 2 * Math.PI;
   const x = prevPosition.x + distance * Math.cos(angle);
   const y = prevPosition.y + distance * Math.sin(angle);

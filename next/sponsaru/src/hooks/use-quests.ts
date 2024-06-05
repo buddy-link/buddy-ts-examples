@@ -10,7 +10,7 @@ export const useQuests = () =>
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'https://e9xc9ftx7l.execute-api.us-east-1.amazonaws.com/dev/quests',
+        url: process.env.NEXT_PUBLIC_BUDDYLINK_QUESTS_API_URL + '/quests',
         headers: {
           Accept: 'application/json',
         },
@@ -51,7 +51,7 @@ export const useCreateQuest = () => {
       const config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://e9xc9ftx7l.execute-api.us-east-1.amazonaws.com/dev/quests',
+        url: process.env.NEXT_PUBLIC_BUDDYLINK_QUESTS_API_URL + '/quests',
         headers: {
           user_id: user.data.emailIdentities.userId,
           Accept: 'application/json',

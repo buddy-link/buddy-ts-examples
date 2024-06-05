@@ -15,7 +15,7 @@ export function SoloPopover({ open, onClose, node, position }: TeamPopoverProps)
   if (!node) return null;
 
   return (
-    <Popover open={open} onOpenChange={onClose}>
+    <Popover open={open} onOpenChange={onClose} key={node.id}>
       <PopoverContent
         className="w-fit min-w-[240px] z-50 gap-3 py-8 shadow-none border-4 border-[#FCF4EE]"
         style={{

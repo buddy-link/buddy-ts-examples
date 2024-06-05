@@ -2,6 +2,7 @@ import { CreateTeam } from '@/components/create-team-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import useUser from './use-user';
+import { toast } from 'sonner';
 
 export const useTeams = () => {
   const { user } = useUser(true);
@@ -11,7 +12,7 @@ export const useTeams = () => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'https://7h6ggyk6yf.execute-api.us-east-1.amazonaws.com/dev/groups',
+        url: process.env.NEXT_PUBLIC_BUDDYLINK_GROUPS_API_URL + '/groups',
         headers: {
           // user_id: user.data.emailIdentities[0].userId,
           Accept: 'application/json',
@@ -44,7 +45,7 @@ export const useCreateTeam = () => {
       const config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://7h6ggyk6yf.execute-api.us-east-1.amazonaws.com/dev/groups',
+        url: process.env.NEXT_PUBLIC_BUDDYLINK_GROUPS_API_URL + '/groups',
         headers: {
           user_id: user.data.emailIdentities[0].userId,
           Accept: 'application/json',
@@ -53,20 +54,19 @@ export const useCreateTeam = () => {
         data: values,
       };
 
-      return axios
-        .request(config)
-        .then((response) => {
-          return response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      return axios.request(config).then((response) => {
+        return response.data;
+      });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: ['teams'],
         refetchType: 'active',
       });
+      toast.success('Team created successfully!');
+    },
+    onError: () => {
+      toast.error('Failed to create team');
     },
   });
 };

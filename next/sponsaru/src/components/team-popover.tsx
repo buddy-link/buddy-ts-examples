@@ -21,6 +21,7 @@ export function TeamPopover({ open, onClose, node, position }: TeamPopoverProps)
         </div>
       </PopoverTrigger> */}
       <PopoverContent
+        key={node.id}
         className="w-fit min-w-[240px] z-50 gap-3 py-8 shadow-none border-4 border-[#FCF4EE]"
         style={{
           position: 'fixed',

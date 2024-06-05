@@ -62,8 +62,8 @@ const HowToPlayDialog = () => {
             <DialogTitle className="font-bold text-5xl">How to Play</DialogTitle>
           </DialogHeader>
 
-          {sections.map((section, index) => (
-            <div key={index} className="mb-3">
+          {sections.map((section) => (
+            <div key={section.title} className="mb-3">
               <h3 className={`text-lg font-bold text-primary-dark`}>{section.title}</h3>
               <p className="text-[#C38B88]">{section.description}</p>
             </div>

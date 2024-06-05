@@ -25,6 +25,7 @@ const formSchema = z.object({
   group_name: z.string().min(2, {
     message: 'Username must be at least 2 characters.',
   }),
+  group_image: z.string(),
 });
 
 export type CreateTeam = z.infer<typeof formSchema>;
@@ -37,6 +38,7 @@ const CreateTeamDialog = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       group_name: '',
+      group_image: 'https://buddy.link/logo.svg',
     },
   });
 
@@ -71,7 +73,7 @@ const CreateTeamDialog = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input className="w-full" placeholder="Quest name" {...field} />
+                      <Input className="w-full" placeholder="Team name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

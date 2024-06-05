@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import React from 'react';
 
 interface CircularProgressBarProps {
@@ -5,6 +6,7 @@ interface CircularProgressBarProps {
   size?: number;
   strokeWidth?: number;
   text: string | number;
+  className?: string;
 }
 
 const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
@@ -12,6 +14,7 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   size = 43,
   strokeWidth = 4,
   text = 100,
+  className = '',
 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -19,7 +22,7 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg width={size} height={size} className="transform rotate-[-90deg]">
+      <svg width={size} height={size} className={cn('transform rotate-[-90deg]', className)}>
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" style={{ stopColor: '#EA5455', stopOpacity: 1 }} />

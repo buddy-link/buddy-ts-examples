@@ -30,7 +30,7 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-96 sm:max-w-screen-sm lg:max-w-screen-lg">
+      <DialogContent className="max-w-[22rem] sm:max-w-[680px] lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="font-bold text-5xl">Teams</DialogTitle>
         </DialogHeader>
@@ -47,11 +47,11 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[65vh] lg:max-h-[35vh]">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[57vh] lg:max-h-[35vh]">
               {teams.map((team, index) => (
                 <div
                   key={index}
-                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-around gap-6 p-[0.625rem] text-sm w-[300px]"
+                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-between gap-6 p-[0.625rem] text-sm w-[300px]"
                 >
                   <div className="flex gap-2 items-center justify-center">
                     <div className="flex flex-col items-start justify-center whitespace-nowrap">

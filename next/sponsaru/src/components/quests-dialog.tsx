@@ -13,6 +13,10 @@ import {
 import CircularProgressBar from './circular-progress-bar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import CreateQuestDialog from './create-quest-dialog';
+import { mockedQuests } from './mocked-quests';
+import { CreditPoints, usePoints } from '@/hooks/use-points';
+import { UseMutateFunction } from '@tanstack/react-query';
+import CreditPointsButton from './credit-points-button';
 
 type Quest = {
   name: string;
@@ -49,7 +53,7 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-96 sm:max-w-screen-sm lg:max-w-screen-lg">
+      <DialogContent className="max-w-[22rem] sm:max-w-[680px] lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="font-bold text-5xl">Quests</DialogTitle>
         </DialogHeader>
@@ -57,19 +61,19 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
           &gt; Complete quests to increase personal & team points
         </DialogDescription>
         <div className="flex flex-col gap-3">
-          <CreateQuestDialog />
+          {/* <CreateQuestDialog /> */}
 
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[65vh] lg:max-h-[35vh]">
-              {quests.map((quest, index) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[57vh] lg:max-h-[35vh]">
+              {mockedQuests.map((quest, index) => (
                 <div
                   key={index}
-                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex justify-between gap-6 p-[0.625rem] w-[300px]"
+                  className="shadow-[0px_-4px_0px_0px_#ff9b61_inset] rounded-md border-x-2 border-t-2 border-[#FCF4EE] flex items-center justify-between gap-6 p-[0.625rem] w-[300px]"
                 >
                   <div className="flex gap-2 items-center justify-center">
-                    <CircularProgressBar percentage={70} text={100} />
+                    <CircularProgressBar percentage={70} text={quest.config.PointValue} />
                     <div className="flex flex-col items-start justify-center whitespace-nowrap">
                       <span className="text-xs">
                         {quest.displayName.length >= 16 ? (
@@ -92,9 +96,7 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="primary" className="text-white gap-2 px-6 py-4">
-                    Claim
-                  </Button>
+                  <CreditPointsButton points={quest.config.PointValue} reason={quest.displayName} />
                 </div>
               ))}
             </div>

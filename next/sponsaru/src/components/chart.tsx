@@ -19,9 +19,9 @@ import { useQuests } from '@/hooks/use-quests';
 import useUser from '@/hooks/use-user';
 
 const DEFAULT_ARGS = {
-  order: 80,
+  order: 40,
   size: 1,
-  clusters: 3,
+  clusters: 1,
   edgesRenderer: 'edges-default',
 };
 
@@ -127,7 +127,7 @@ const Chart = () => {
           )}
 
           <div className="absolute top-4 left-4 z-40">
-            {!user.isLoading && user.data.walletIdentities.length === 0 && <HowToPlayDialog />}
+            {!user.isLoading && user.data && user.data?.walletIdentities.length === 0 && <HowToPlayDialog />}
           </div>
           <TabsContent value="team" className="h-full">
             <TeamsGraph onNodeClick={handleTeamNodeClick} nodes={teams} isLoading={isTeamsDataLoading} />
