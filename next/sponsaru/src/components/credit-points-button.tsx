@@ -7,6 +7,7 @@ import { Quest } from './quests-dialog';
 import { useCallback, useMemo } from 'react';
 import useUser from '@/hooks/use-user';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useSession } from 'next-auth/react';
 
 type CreditPointsButtonProps = {
   quest: Quest;
@@ -14,11 +15,12 @@ type CreditPointsButtonProps = {
 
 export default function CreditPointsButton({ quest }: CreditPointsButtonProps) {
   // const { mutate: creditPoints, isPending: isCreditPending } = usePoints();
+  const session = useSession();
   const wallet = useWallet();
   const { mutate: creditPoints, isPending: isCreditPending } = useAttempt();
   const { user } = useUser(true);
   const questId = useMemo(() => `${quest.name}_${quest.owner}`, [quest]);
-  const userId = useMemo(() => user.data.emailIdentities[0].userId, [user]);
+  const userId = useMemo(() => user.data?.emailIdentities[0].userId, [user]);
 
   const handleClick = useCallback(() => {
     window.open(quest.trigger.args.post as string, '_blank');
@@ -37,11 +39,12 @@ export default function CreditPointsButton({ quest }: CreditPointsButtonProps) {
 
   return (
     <Button
-      disabled={isCreditPending || quest.status === 'completed'}
+      disabled={isCreditPending || quest.status === 'completed' || session.status !== 'authenticated'}
       variant="primary"
       className={cn(
-        'text-white gap-2 px-6 py-4 w-full disabled:opacity-100 disabled:shadow-[0px_0px_0px_0px_#ff9b61_inset] disabled:translate-y-[2px]',
-        quest.status === 'completed' && 'bg-green-400'
+        'text-white gap-2 px-6 py-4 w-fit  disabled:shadow-[0px_0px_0px_0px_#ff9b61_inset] disabled:translate-y-[2px]',
+        quest.status === 'completed' && 'bg-green-400 disabled:opacity-100',
+        session.status !== 'authenticated' && 'opacity-80'
       )}
       onClick={handleClick}
     >

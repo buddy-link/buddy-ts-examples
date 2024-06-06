@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import useUser from './use-user';
 import axios from 'axios';
 import { useQuests } from './use-quests';
@@ -36,12 +36,15 @@ export function useAttempt() {
       });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['quests', 'points-history'],
-        refetchType: 'all',
-      });
+      //TODO: use instant notifications api to trigger query invalidation and refetch
+      setTimeout(async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ['quests', 'points-history'],
+          refetchType: 'all',
+        });
 
-      await refetch();
+        await refetch();
+      }, 5000);
 
       return;
     },

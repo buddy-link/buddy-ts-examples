@@ -15,6 +15,10 @@ import { cn } from '@/lib/utils';
 import { Team } from './chart';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import CreateTeamDialog from './create-team-dialog';
+import { useJoinTeam, useLeaveTeam } from '@/hooks/use-teams';
+import { useCallback } from 'react';
+import JoinOrLeaveTeamButton from './join-or-leave-team-button';
+import { Skeleton } from './ui/skeleton';
 
 type TeamsDialogProps = {
   teams: Team[];
@@ -45,7 +49,14 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
           <CreateTeamDialog />
 
           {isLoading ? (
-            <div>Loading...</div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[57vh] lg:max-h-[35vh]">
+              {[...Array(6)].map((_, index) => (
+                <Skeleton
+                  key={index}
+                  className="w-[300px] h-[62px] bg-[#f8e5d6] rounded-md border-x-2 border-t-2 border-[#FCF4EE]"
+                />
+              ))}
+            </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-y-auto max-h-[57vh] lg:max-h-[35vh]">
               {teams.map((team, index) => (
@@ -92,12 +103,7 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
                       </span>
                     </div>
                   </div>
-                  <Button
-                    variant={index === 1 ? 'destructive' : 'primary'}
-                    className={cn('text-white gap-2 px-6 py-4 ')}
-                  >
-                    {index === 1 ? 'Leave' : 'Join'}
-                  </Button>
+                  <JoinOrLeaveTeamButton team={team} />
                 </div>
               ))}
             </div>
@@ -106,7 +112,9 @@ const TeamsDialog = ({ teams, isLoading }: TeamsDialogProps) => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="destructive">Close</Button>
+            <Button variant="destructive" className="sm:mr-2 lg:mr-3">
+              Close
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -28,6 +28,8 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
       let prevSize = nodes[0].members;
 
       nodes.forEach((node, index) => {
+        console.log(node);
+
         let position;
         if (index === 0) {
           position = prevPosition;
@@ -44,6 +46,7 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
           originalLabel: node.label,
           points: node.points,
           members: node.members,
+          joined: node.joined,
         } as Attributes);
       });
 

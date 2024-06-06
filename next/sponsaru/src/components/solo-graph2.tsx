@@ -1,12 +1,9 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import Graph from 'graphology';
-import clusters from 'graphology-generators/random/clusters';
-
 import circlepack from 'graphology-layout/circlepack';
 import seedrandom from 'seedrandom';
 import Sigma from 'sigma';
 import { EdgeLineProgram, EdgeRectangleProgram } from 'sigma/rendering';
-import { Node } from './solo-graph';
 import { NodeImageProgram } from '@sigma/node-image';
 import { Attributes } from 'graphology-types';
 import { MouseCoords } from 'sigma/types';
@@ -28,30 +25,32 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
       ...args,
     };
 
-    // 1. Generate a graph:
-    const graph = clusters(Graph, { ...state, rng });
-    circlepack.assign(graph, {
-      hierarchyAttributes: ['cluster'],
-    });
+    const data = [
+      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 9430 },
+      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1930 },
+      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1730 },
+      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1230 },
+      { name: 'point_AIDAYEOGDEAXQDTAWY4DO', total: 953 },
+      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 530 },
+      { name: 'point_garbage', total: 500 },
+    ];
 
-    const colors: Record<string, string> = {};
-    for (let i = 0; i < +state.clusters; i++) {
-      colors[i] = '#' + Math.floor(rng() * 16777215).toString(16);
-    }
+    const graph = new Graph();
 
-    let i = 0;
-    graph.forEachNode((node, { cluster }) => {
-      graph.mergeNodeAttributes(node, {
-        size: i / (Math.random() * 100),
-
-        color: colors[cluster + ''],
+    data.forEach((item, index) => {
+      const nodeKey = `node_${index}`;
+      graph.addNode(nodeKey, {
+        size: item.total / 100,
+        color: '#' + Math.floor(rng() * 16777215).toString(16),
         image: '/logo.webp',
-        hiddenLabel: `Node n°${++i}, in cluster n°${cluster}`,
-        originalLabel: `Node n°${++i}, in cluster n°${cluster}`,
+        originalLabel: `${item.name}`,
       });
     });
 
-    // 2. Render the graph:
+    circlepack.assign(graph, {
+      hierarchyAttributes: ['label'],
+    });
+
     const container = document.getElementById('solo-container') as HTMLElement;
     const renderer = new Sigma(graph, container, {
       defaultEdgeColor: 'rgba(0,0,0,0)',
@@ -62,13 +61,11 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
       },
       edgeLabelWeight: 'bold',
       defaultNodeType: 'image',
-
       nodeProgramClasses: {
         image: NodeImageProgram,
       },
     });
 
-    // Cheap trick: tilt the camera a bit to make labels more readable:
     renderer.getCamera().setState({
       angle: 0.2,
     });
@@ -85,11 +82,10 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
       graph.removeNodeAttribute(node, 'label');
     });
 
-    // Cleanup function to remove event listeners
     return () => {
       renderer.kill();
     };
-  }, [args]);
+  }, [args, onNodeClick]);
 
   return (
     <div>

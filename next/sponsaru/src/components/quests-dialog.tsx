@@ -139,7 +139,9 @@ const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="primary">Close</Button>
+            <Button variant="destructive" className="sm:mr-2 lg:mr-3">
+              Close
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

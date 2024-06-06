@@ -11,6 +11,7 @@ import useUser from '@/hooks/use-user';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CreateUserEmailIdentity, CreateUserWalletIdentity } from '@/lib/auth';
 import useAuthReq from '@/hooks/use-auth-request';
+import { getQueryClient } from './react-query-provider';
 
 interface Props extends PropsWithChildren {
   googleToken: User.GoogleToken;
@@ -32,6 +33,7 @@ export const UserProvider = ({ children, googleToken }: Props) => {
   const { user } = useUser(session.status === 'authenticated' && state.credentials !== null);
   const { publicKey, connected } = useWallet();
   const authReq = useAuthReq();
+  const queryClient = getQueryClient();
 
   useUpdateCognitoCredentials({
     googleToken: googleToken,
@@ -42,27 +44,42 @@ export const UserProvider = ({ children, googleToken }: Props) => {
     if (session.status !== 'authenticated') return;
     if (!session.data.user) return;
     if (!session.data.user.email) return;
+    if (!user.data) return;
+    if (user.data.emailIdentities && user.data.emailIdentities.length > 0) return;
 
     const emailIdentity = await CreateUserEmailIdentity(authReq, {
       email: session.data.user.email,
       primary: true,
     });
+    await queryClient.invalidateQueries({
+      queryKey: ['user'],
+      refetchType: 'all',
+    });
+    await user.refetch();
+
     return emailIdentity;
-  }, [authReq, session.data?.user, session.status]);
+  }, [authReq, queryClient, session.data?.user, session.status, user]);
 
   const handleWalletIdentityCreate = useCallback(async () => {
-    console.log('handleWalletIdentityCreate');
     if (session.status !== 'authenticated') return;
     if (!publicKey) return;
     if (!user.data) return;
+    if (!user.data.emailIdentities) return;
+    if (user.data.emailIdentities.length === 0) return;
+    if (!connected) return;
+    if (user.data.walletIdentities && user.data.walletIdentities.length > 0) return;
 
-    console.log('handleWalletIdentityCreate2');
     const walletIdentity = await CreateUserWalletIdentity(authReq, {
       walletPublicKey: publicKey.toBase58(),
       primary: true,
     });
+    await queryClient.invalidateQueries({
+      queryKey: ['user'],
+      refetchType: 'all',
+    });
+    await user.refetch();
     return walletIdentity;
-  }, [authReq, publicKey, session.status, user.data]);
+  }, [authReq, publicKey, queryClient, session.status, user]);
 
   useEffect(() => {
     handleEmailIdentityCreate();

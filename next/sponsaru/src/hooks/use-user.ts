@@ -11,6 +11,7 @@ const useUser = (enabled: boolean) => {
     queryKey: ['user'],
     queryFn: () => authReq.get(`${authAPI}/user`).then((res: AxiosResponse) => res.data),
     enabled: enabled,
+    staleTime: 1000 * 60 * 2,
   });
 
   return { user };

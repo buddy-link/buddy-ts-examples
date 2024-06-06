@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Image from 'next/image';
 import { NodeData, Position } from './types';
+import JoinOrLeaveTeamButton from './join-or-leave-team-button';
+import { useMemo } from 'react';
 
 interface TeamPopoverProps {
   open: boolean;
@@ -11,22 +13,26 @@ interface TeamPopoverProps {
 }
 
 export function TeamPopover({ open, onClose, node, position }: TeamPopoverProps) {
+  const popoverStyle = useMemo(
+    () => ({
+      position: 'fixed',
+      left: position.x,
+      top: position.y,
+    }),
+    [position.x, position.y]
+  );
+
   if (!node) return null;
 
   return (
     <Popover open={open} onOpenChange={onClose}>
-      {/* <PopoverTrigger asChild>
-        <div className="hidden" style={{ position: 'fixed', left: 0, top: position.y }}>
-          
-        </div>
-      </PopoverTrigger> */}
       <PopoverContent
         key={node.id}
         className="w-fit min-w-[240px] z-50 gap-3 py-8 shadow-none border-4 border-[#FCF4EE]"
         style={{
           position: 'fixed',
-          left: position.x,
-          top: position.y,
+          left: popoverStyle.left,
+          top: popoverStyle.top,
         }}
       >
         <div className="flex flex-col items-center gap-3">
@@ -49,9 +55,7 @@ export function TeamPopover({ open, onClose, node, position }: TeamPopoverProps)
             </span>
           </div>
 
-          <Button type="button" variant="primary" className="px-8 mt-4" onClick={onClose}>
-            Join
-          </Button>
+          <JoinOrLeaveTeamButton team={node} />
         </div>
       </PopoverContent>
     </Popover>

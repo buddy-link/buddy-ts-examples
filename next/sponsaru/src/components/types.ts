@@ -4,6 +4,7 @@ export type NodeData = {
   image: string;
   members: number;
   points: number;
+  joined?: boolean;
 };
 
 export type Position = {

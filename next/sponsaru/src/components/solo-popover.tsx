@@ -7,7 +7,7 @@ import { NodeObject } from 'react-force-graph-2d';
 interface TeamPopoverProps {
   open: boolean;
   onClose: () => void;
-  node: NodeObject | null;
+  node: NodeData | null;
   position: Position;
 }
 
@@ -27,13 +27,22 @@ export function SoloPopover({ open, onClose, node, position }: TeamPopoverProps)
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-col items-center justify-center gap-1">
             <Image src={node.image} width={84} height={84} alt={node.label} />
-            <h4 className="font-bold text-primary-dark">USER NAME</h4>
-            <span className="flex items-center justify-center space-x-2 text-light font-normal">USER POINTS</span>
+            <h4 className="font-bold text-primary-dark">
+              {node.label.length >= 16 ? node.label.slice(0, 13) + '...' : node.label}
+            </h4>
+            <span className="flex items-center justify-center space-x-2 text-light font-normal">
+              {' '}
+              {node.points.toLocaleString('en-US', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}{' '}
+              points
+            </span>
           </div>
 
-          <Button type="button" variant="primary" className="px-8 mt-4" onClick={onClose}>
+          {/* <Button type="button" variant="primary" className="px-8 mt-4" onClick={onClose}>
             Join
-          </Button>
+          </Button> */}
         </div>
       </PopoverContent>
     </Popover>

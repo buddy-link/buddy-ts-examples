@@ -15,8 +15,11 @@ type LeaderboardProps = {
 };
 
 const Leaderboard = ({ teamsData, isLoading }: LeaderboardProps) => {
-  const { data: topUsers } = useTopUsers();
-  const { data: topGroups } = useTopGroups();
+  const { data: topUsers, isLoading: isTopUsersLoading } = useTopUsers();
+  const { data: topGroups, isLoading: isTopGroupsLoading } = useTopGroups();
+
+  console.log('topUsers', topUsers);
+
   return (
     <Card className={cn('bg-[#FCF4EE] border-4 border-[rgb(252,244,238)]')}>
       <CardHeader className="flex flex-row justify-between items-center p-3">
@@ -34,7 +37,7 @@ const Leaderboard = ({ teamsData, isLoading }: LeaderboardProps) => {
         </TabsList>
         <TabsContent value="team">
           <Card className="border-0 shadow-none gap-4 flex flex-col">
-            {isLoading ? (
+            {isTopGroupsLoading ? (
               <LoadingLeaderboard />
             ) : (
               topGroups
@@ -95,7 +98,7 @@ const Leaderboard = ({ teamsData, isLoading }: LeaderboardProps) => {
         </TabsContent>
         <TabsContent value="solo">
           <Card className="border-0 shadow-none gap-4 flex flex-col">
-            {isLoading ? (
+            {isTopUsersLoading ? (
               <LoadingLeaderboard />
             ) : (
               topUsers.slice(0, 5).map((member: { name: string; image: string; total: number }, index: number) => (

@@ -1,5 +1,4 @@
-import { useContext, useEffect } from 'react';
-
+import { useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import aws4Interceptor from 'aws4-axios';
 import { UserContext } from '@/providers/user-provider';
@@ -8,11 +7,10 @@ const authReq = axios.create();
 
 const useAuthReq = () => {
   const userContext = useContext(UserContext);
-
-  console.log('userContext', userContext);
+  const isInterceptorAdded = useRef(false);
 
   useEffect(() => {
-    if (!userContext.credentials) {
+    if (!userContext.credentials || isInterceptorAdded.current) {
       return;
     }
 
@@ -35,6 +33,8 @@ const useAuthReq = () => {
 
       return config;
     });
+
+    isInterceptorAdded.current = true;
   }, [userContext.credentials]);
 
   return authReq;

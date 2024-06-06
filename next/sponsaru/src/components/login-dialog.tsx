@@ -48,12 +48,12 @@ const LoginDialog = () => {
   }, [wallet]);
 
   useEffect(() => {
+    if (session.status === 'loading') return;
+    if (!isAuthenticated) return setOpenDialog(true);
     if (user.data && user.data.walletIdentities.length === 0) return setOpenDialog(true);
 
     setOpenDialog(false);
-  }, [user.data]);
-
-  console.log('session', user);
+  }, [isAuthenticated, session.status, user.data]);
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
