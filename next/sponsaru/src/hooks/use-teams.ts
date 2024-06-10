@@ -39,10 +39,11 @@ export const useUserTeams = () => {
   const { user } = useUser(true);
   const session = useSession();
 
+  console.log('session', session);
+
   return useQuery({
     queryKey: ['user-teams'],
     queryFn: async () => {
-      if (session.status !== 'authenticated') return null;
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
@@ -58,6 +59,7 @@ export const useUserTeams = () => {
         return response.data;
       });
     },
+    enabled: session.status === 'authenticated',
   });
 };
 

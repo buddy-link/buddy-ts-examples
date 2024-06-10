@@ -51,7 +51,7 @@ export default function CreditPointsButton({ quest }: CreditPointsButtonProps) {
       {isCreditPending && (
         <CircularProgressBar percentage={75} text="" size={16} strokeWidth={3} className="animate-spin" />
       )}
-      {!isCreditPending && quest.status === 'completed' ? 'claimed' : 'claim'}
+      {!isCreditPending && quest.status === 'completed' ? 'complete' : 'start'}
     </Button>
   );
 }
