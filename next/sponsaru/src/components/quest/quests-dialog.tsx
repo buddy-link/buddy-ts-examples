@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { JoystickIcon } from '@/assets/icons';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogClose,
@@ -10,39 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '../ui/dialog';
 import CircularProgressBar from './circular-progress-bar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 import CreditPointsButton from './credit-points-button';
 import { cn } from '@/lib/utils';
-import { Skeleton } from './ui/skeleton'; // Importe o componente Skeleton do Shadcn
-
-export type Quest = {
-  name: string;
-  status: string;
-  config: {
-    PointValue: number;
-    repeatFrequency: 'none';
-    useLastSuccessAsEpoch: boolean;
-    MaximumTimeToComplete: number;
-    timezone: string;
-    repeatLimit: number;
-  };
-  image: string;
-  displayName: string;
-  owner: string;
-  trigger: {
-    type: string;
-    provider: string;
-    args: Record<string, unknown>;
-  };
-};
-
-type QuestsDialogProps = {
-  quests: Quest[];
-  isLoading: boolean;
-};
+import { Skeleton } from '../ui/skeleton'; // Importe o componente Skeleton do Shadcn
+import { Quest, QuestsDialogProps } from '@/types/types';
 
 const QuestsDialog = ({ quests, isLoading }: QuestsDialogProps) => {
   const [sortedQuests, setSortedQuests] = useState<Quest[]>([]);

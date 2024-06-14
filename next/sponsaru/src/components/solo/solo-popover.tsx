@@ -1,8 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverContent } from '@/components/ui/popover';
 import Image from 'next/image';
-import { NodeData, Position } from './types';
-import { NodeObject } from 'react-force-graph-2d';
+import { NodeData, Position } from '@/types/types';
 
 interface TeamPopoverProps {
   open: boolean;

@@ -1,13 +1,6 @@
-import NextAuth, { User } from 'next-auth';
+import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import { cookies } from 'next/headers';
-import * as nacl from 'tweetnacl';
-import * as bs58 from 'bs58';
-import { CreateUserWalletIdentity, GetUser } from '@/lib/auth';
-import axios from 'axios';
-import useAuthReq from '@/hooks/use-auth-request';
-import aws4Interceptor from 'aws4-axios';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [

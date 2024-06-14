@@ -1,42 +1,16 @@
-'use client';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useTeams } from '@/hooks/use-teams';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { HistoryEntry, usePoints } from '@/hooks/use-points';
+import useUser from '@/hooks/use-user';
+import { useSession } from 'next-auth/react';
+import { NodeData, Position, Quest } from '@/types/types';
 import Graph from 'graphology';
 import { Attributes } from 'graphology-types';
-import { NodeData, Position } from './types';
-import Leaderboard from './leaderboard';
-import QuestsDialog, { Quest } from './quests-dialog';
-import TeamsDialog from './teams-dialog';
-import HowToPlayDialog from './how-to-play-dialog';
-import { TeamPopover } from './team-popover';
-import { useTeams, useUserTeams } from '@/hooks/use-teams';
-import { Tabs, TabsContent } from './ui/tabs';
-import TeamsGraph from './teams-graph';
 import { MouseCoords } from 'sigma/types';
-import { SoloPopover } from './solo-popover';
-import SoloGraph2 from './solo-graph2';
-import { useQuests } from '@/hooks/use-quests';
-import useUser from '@/hooks/use-user';
-import { HistoryEntry, useUserPointsHistory } from '@/hooks/use-points';
-import { useSession } from 'next-auth/react';
+import { useQuest } from './use-quests';
 
-const DEFAULT_ARGS = {
-  order: 40,
-  size: 1,
-  clusters: 1,
-  edgesRenderer: 'edges-default',
-};
-
-export type Team = {
-  id: string;
-  label: string;
-  members: number;
-  points: number;
-  image: string;
-  joined?: boolean;
-};
-
-const Chart = () => {
+export const useGraphData = () => {
   const [open, setOpen] = useState(false);
   const [selectedTeamNode, setSelectedTeamNode] = useState<NodeData | null>(null);
   const [selectedSoloNode, setSelectedSoloNode] = useState<NodeData | null>(null);
@@ -44,21 +18,23 @@ const Chart = () => {
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
   const session = useSession();
 
-  console.log('session', session);
-
-  const { data: questsData, isLoading: isQuestsDataLoading } = useQuests();
-  const { data: userPoints, isLoading: isUserPointsLoading } = useUserPointsHistory();
-  const { data: teamsData, isLoading: isTeamsDataLoading } = useTeams();
-  const { data: userTeams, isLoading: isUserTeamsLoading } = useUserTeams();
-
+  const { questsQuery } = useQuest();
+  const { userPointsHistoryQuery } = usePoints();
+  const { teamsQuery, userTeamsQuery } = useTeams();
   const { user } = useUser(true);
 
-  // const teams = useMemo(() => {
-  //   if (!teamsData || isTeamsDataLoading) return [];
+  const questsData = questsQuery.data;
+  const isQuestsDataLoading = questsQuery.isLoading;
 
-  // }, [isTeamsDataLoading, teamsData]);
+  const userPoints = userPointsHistoryQuery.data;
+  const isUserPointsLoading = userPointsHistoryQuery.isLoading;
 
-  //this memo is merges the teams and userTeams data, adding a joined property to the teams
+  const teamsData = teamsQuery.data;
+  const isTeamsDataLoading = teamsQuery.isLoading;
+
+  const userTeams = userTeamsQuery.data;
+  const isUserTeamsLoading = userTeamsQuery.isLoading;
+
   const teams = useMemo(() => {
     if (!teamsData || isTeamsDataLoading) return [];
     if (session.status === 'unauthenticated') {
@@ -68,7 +44,6 @@ const Chart = () => {
           label: team.group_name,
           members: team.total_members,
           points: team.total_points,
-          //TODO: change this to the actual image using {team.group_image}, its necessary to fix allowed domains in next.config.js
           image: '/logo.webp',
         })
       );
@@ -176,46 +151,20 @@ const Chart = () => {
     }
   }, [user.isLoading, user.data]);
 
-  return (
-    <>
-      <Tabs defaultValue="team">
-        <div className="relative rounded-lg overflow-hidden" style={{ width: '80vw', height: '80vh' }}>
-          {selectedTeamNode && (
-            <TeamPopover
-              open={!!selectedTeamNode && open}
-              onClose={onPopoverClose}
-              node={selectedTeamNode}
-              position={position}
-            />
-          )}
-          {selectedSoloNode && (
-            <SoloPopover
-              open={!!selectedSoloNode && open}
-              onClose={onPopoverClose}
-              node={selectedSoloNode}
-              position={position}
-            />
-          )}
-
-          <div className="absolute top-4 left-4 z-40">{showHowToPlay && <HowToPlayDialog />}</div>
-          <TabsContent value="team" className="h-full">
-            <TeamsGraph onNodeClick={handleTeamNodeClick} nodes={teams} isLoading={isTeamsDataLoading} />
-          </TabsContent>
-          <TabsContent value="solo" className="h-full">
-            {/* <SoloGraph handleNodeClick={handleSoloNodeClick} /> */}
-            <SoloGraph2 args={DEFAULT_ARGS} onNodeClick={handleSoloNodeClick} />
-          </TabsContent>
-          <div className="absolute top-5 right-5">
-            <Leaderboard teamsData={teams} isLoading={isTeamsDataLoading} />
-          </div>
-          <div className="absolute bottom-4 left-4 flex gap-4 items-center justify-start">
-            <QuestsDialog quests={quests} isLoading={isQuestsDataLoading || isUserPointsLoading} />
-            <TeamsDialog teams={teams} isLoading={isTeamsDataLoading || isUserTeamsLoading} />
-          </div>
-        </div>
-      </Tabs>
-    </>
-  );
+  return {
+    open,
+    selectedTeamNode,
+    selectedSoloNode,
+    showHowToPlay,
+    position,
+    teams,
+    quests,
+    isQuestsDataLoading,
+    isUserPointsLoading,
+    isTeamsDataLoading,
+    isUserTeamsLoading,
+    handleTeamNodeClick,
+    handleSoloNodeClick,
+    onPopoverClose,
+  };
 };
-
-export default Chart;

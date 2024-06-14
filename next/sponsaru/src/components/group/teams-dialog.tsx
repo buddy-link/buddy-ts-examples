@@ -1,5 +1,5 @@
-import { JoystickIcon, TeamsIcon } from '@/assets/icons';
-import { Button } from './ui/button';
+import { TeamsIcon } from '@/assets/icons';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogClose,
@@ -9,16 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
-import CircularProgressBar from './circular-progress-bar';
-import { cn } from '@/lib/utils';
-import { Team } from './chart';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+} from '../ui/dialog';
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import CreateTeamDialog from './create-team-dialog';
-import { useJoinTeam, useLeaveTeam } from '@/hooks/use-teams';
-import { useCallback } from 'react';
 import JoinOrLeaveTeamButton from './join-or-leave-team-button';
-import { Skeleton } from './ui/skeleton';
+import { Skeleton } from '../ui/skeleton';
+import { Team } from '@/types/types';
 
 type TeamsDialogProps = {
   teams: Team[];

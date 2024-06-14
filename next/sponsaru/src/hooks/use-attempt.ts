@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import useUser from './use-user';
 import axios from 'axios';
-import { useQuests } from './use-quests';
+import { useQuest } from './use-quests';
 import { getQueryClient } from '@/providers/react-query-provider';
 
 type Attempt = {
@@ -15,7 +15,7 @@ type Attempt = {
 export function useAttempt() {
   const { user } = useUser(true);
   const queryClient = getQueryClient();
-  const { refetch } = useQuests();
+  const { questsQuery } = useQuest();
 
   return useMutation({
     mutationKey: ['attempt'],
@@ -25,28 +25,21 @@ export function useAttempt() {
         maxBodyLength: Infinity,
         url: process.env.NEXT_PUBLIC_BUDDYLINK_ATTEMPT_API_URL + '/attempt',
         headers: {
-          user_id: user.data.emailIdentities.userId,
+          user_id: user.data.emailIdentities[0].userId,
           Accept: 'application/json',
         },
         data: values,
       };
 
-      return axios.request(config).then((response) => {
-        return response.data;
-      });
+      const response = await axios.request(config);
+      return response.data;
     },
     onSuccess: async () => {
-      //TODO: use instant notifications api to trigger query invalidation and refetch
+      // Use instant notifications API to trigger query invalidation and refetch
       setTimeout(async () => {
-        await queryClient.invalidateQueries({
-          queryKey: ['quests', 'points-history'],
-          refetchType: 'all',
-        });
-
-        await refetch();
+        await queryClient.invalidateQueries({ queryKey: ['quests', 'points-history'] });
+        await questsQuery.refetch();
       }, 5000);
-
-      return;
     },
   });
 }

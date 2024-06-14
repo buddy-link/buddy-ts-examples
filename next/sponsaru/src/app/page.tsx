@@ -1,11 +1,11 @@
+import GraphContainer from '@/components/graph-container';
 import React from 'react';
-import Chart from '@/components/chart';
 
 export default function Home() {
   const randomTree = genRandomTree(5000, false);
   return (
     <main className="flex flex-col items-center justify-between ">
-      <Chart />
+      <GraphContainer />
     </main>
   );
 }

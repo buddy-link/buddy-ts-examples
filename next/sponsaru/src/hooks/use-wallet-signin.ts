@@ -1,9 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import axios from 'axios';
-import { signIn } from 'next-auth/react';
 import { useCallback } from 'react';
 import { sign } from 'tweetnacl';
-import * as bs58 from 'bs58';
 import { toast } from 'sonner';
 import { CreateUserWalletIdentity } from '@/lib/auth';
 import useAuthReq from './use-auth-request';

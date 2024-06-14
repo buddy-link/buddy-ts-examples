@@ -1,17 +1,13 @@
 // import { usePoints } from '@/hooks/use-points';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import CircularProgressBar from './circular-progress-bar';
 import { cn } from '@/lib/utils';
 import { useAttempt } from '@/hooks/use-attempt';
-import { Quest } from './quests-dialog';
 import { useCallback, useMemo } from 'react';
 import useUser from '@/hooks/use-user';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSession } from 'next-auth/react';
-
-type CreditPointsButtonProps = {
-  quest: Quest;
-};
+import { CreditPointsButtonProps } from '@/types/types';
 
 export default function CreditPointsButton({ quest }: CreditPointsButtonProps) {
   // const { mutate: creditPoints, isPending: isCreditPending } = usePoints();

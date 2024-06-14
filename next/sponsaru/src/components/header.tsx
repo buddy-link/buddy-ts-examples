@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import { BuddyConnectWalletButton } from './wallet-connect-button';
-import LoginDialog from './login-dialog';
+import LoginDialog from './auth/login-dialog';
 
 const Header = () => {
   return (

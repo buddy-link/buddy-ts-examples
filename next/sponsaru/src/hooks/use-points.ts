@@ -14,111 +14,81 @@ export type HistoryEntry = {
   source: string;
   value: number;
 };
-export const useTopUsers = () =>
-  useQuery({
-    queryKey: ['top-users'],
-    queryFn: async () => {
-      const config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + '/points/user/top',
-        headers: {
-          Accept: 'application/json',
-        },
-      };
 
-      return axios.request(config).then((response) => {
-        return response.data;
-      });
+const fetchTopUsers = async () => {
+  const config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + '/points/user/top',
+    headers: {
+      Accept: 'application/json',
     },
-  });
+  };
+  const response = await axios.request(config);
+  return response.data;
+};
 
-export const useTopGroups = () =>
-  useQuery({
-    queryKey: ['top-groups'],
-    queryFn: async () => {
-      const config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + '/points/group/top',
-        headers: {
-          Accept: 'application/json',
-        },
-      };
-
-      return axios.request(config).then((response) => {
-        return response.data;
-      });
+const fetchTopGroups = async () => {
+  const config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + '/points/group/top',
+    headers: {
+      Accept: 'application/json',
     },
-  });
+  };
+  const response = await axios.request(config);
+  return response.data;
+};
 
-export const useCreditPoints = () => {
+const creditPoints = async (userId: string, values: CreditPoints) => {
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + `/points/user/${userId}`,
+    headers: {
+      Accept: 'application/json',
+    },
+    data: values,
+  };
+  const response = await axios.request(config);
+  return response.data;
+};
+
+const fetchUserPointsHistory = async (userId: string) => {
+  const config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + `/points/user/${userId}`,
+    headers: {
+      Accept: 'application/json',
+    },
+  };
+  const response = await axios.request(config);
+  return response.data;
+};
+
+export const usePoints = () => {
   const queryClient = getQueryClient();
   const { user } = useUser(true);
 
-  return useMutation({
-    mutationKey: ['points'],
-    mutationFn: async (values: CreditPoints) => {
-      if (!user.data.emailIdentities.length) {
-        throw new Error('User not found');
-      }
+  const topUsersQuery = useQuery({ queryKey: ['top-users'], queryFn: fetchTopUsers });
+  const topGroupsQuery = useQuery({ queryKey: ['top-groups'], queryFn: fetchTopGroups });
 
-      const config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + `/points/user/${user.data.emailIdentities[0].userId}`,
-        headers: {
-          Accept: 'application/json',
-        },
-        data: values,
-      };
-
-      return axios.request(config).then((response) => {
-        return response.data;
-      });
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['points'],
-        refetchType: 'active',
-      });
-    },
-  });
-};
-
-export const useUserPointsHistory = () => {
-  const { user } = useUser(true);
-
-  return useQuery({
+  const userPointsHistoryQuery = useQuery({
     queryKey: ['points-history'],
-    queryFn: async () => {
-      const config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: process.env.NEXT_PUBLIC_BUDDYLINK_POINTS_API_URL + `/points/user/${user.data.emailIdentities[0].userId}`,
-        headers: {
-          Accept: 'application/json',
-        },
-      };
-      return axios.request(config).then((response) => {
-        return response.data;
-      });
-    },
+    queryFn: () => fetchUserPointsHistory(user.data.emailIdentities[0].userId),
+    enabled: !!user.data?.emailIdentities.length,
   });
+
+  const creditPointsMutation = useMutation({
+    mutationFn: (values: CreditPoints) => creditPoints(user.data.emailIdentities[0].userId, values),
+  });
+
+  return {
+    topUsersQuery,
+    topGroupsQuery,
+    userPointsHistoryQuery,
+    creditPointsMutation,
+  };
 };
-
-// Group
-// https://7h6ggyk6yf.execute-api.us-east-1.amazonaws.com/dev/
-// z3RLMDSix54as3nOtaP1cawy9fhykGsc581JPLSs
-
-// Point
-// https://3crw129z4f.execute-api.us-east-1.amazonaws.com/dev/
-// RlaCE1zR1uaemLdMguydX5yS8pqcNex674tT3CJb
-
-// Quest Attempt
-// https://0rcgwqmea8.execute-api.us-east-1.amazonaws.com/dev/
-// fJ6VTc0kPR6Go2JAbELJR5iBcpuKC1H45OtPVsAC
-
-// Quest Management API
-// https://e9xc9ftx7l.execute-api.us-east-1.amazonaws.com/dev/
-// DfamlZxOYS9nY89FHtf7Y5ufMLoJkFDs74YaOss1

@@ -1,5 +1,5 @@
 'use client';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogClose,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '../ui/dialog';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
@@ -17,7 +17,7 @@ import { z } from 'zod';
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useCreateQuest } from '@/hooks/use-quests';
+import { useQuest } from '@/hooks/use-quests';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +49,7 @@ export type CreateQuest = z.infer<typeof formSchema>;
 
 const CreateQuestDialog = () => {
   const session = useSession();
-  const { data, mutate } = useCreateQuest();
+  const { createQuestMutation } = useQuest();
 
   const form = useForm<CreateQuest>({
     resolver: zodResolver(formSchema),
@@ -74,9 +74,9 @@ const CreateQuestDialog = () => {
     },
   });
 
-  async function onSubmit(values: CreateQuest) {
-    mutate(values);
-  }
+  const onSubmit = async (values: CreateQuest) => {
+    createQuestMutation.mutate(values);
+  };
 
   return (
     <Dialog>
@@ -94,7 +94,7 @@ const CreateQuestDialog = () => {
         <DialogHeader>
           <DialogTitle className="font-bold text-5xl">Create Quest</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="font-bold">&gt; Create a quest</DialogDescription>
+        <DialogDescription className="font-bold">Create a quest</DialogDescription>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -238,11 +238,9 @@ const CreateQuestDialog = () => {
             </div>
 
             <DialogFooter>
-              <DialogClose asChild>
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
-              </DialogClose>
+              <Button type="submit" variant="primary">
+                Submit
+              </Button>
               <DialogClose asChild>
                 <Button type="button" variant="destructive">
                   Close

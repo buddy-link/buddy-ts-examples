@@ -11,8 +11,7 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 import { useCallback, useEffect, useState } from 'react';
-import GoAnimation from './go-animation';
-import { DialogOverlay } from '@radix-ui/react-dialog';
+import GoAnimation from './animations/go-animation';
 import useUser from '@/hooks/use-user';
 
 const sections = [

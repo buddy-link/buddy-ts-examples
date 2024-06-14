@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverContent } from '@/components/ui/popover';
 import Image from 'next/image';
-import { NodeData, Position } from './types';
+
 import JoinOrLeaveTeamButton from './join-or-leave-team-button';
 import { useMemo } from 'react';
+import { NodeData, Position } from '@/types/types';
 
 interface TeamPopoverProps {
   open: boolean;

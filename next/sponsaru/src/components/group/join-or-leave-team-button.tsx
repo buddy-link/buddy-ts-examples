@@ -1,26 +1,25 @@
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
-import { Team } from './chart';
-import { useJoinTeam, useLeaveTeam } from '@/hooks/use-teams';
+import { Button } from '../ui/button';
+import { useTeams } from '@/hooks/use-teams';
 import { useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { Team } from '@/types/types';
 
 export default function JoinOrLeaveTeamButton({ team }: { team: Team }) {
   console.log('team', team);
+  const { leaveTeamMutation, joinTeamMutation } = useTeams();
 
-  const { mutate: leaveTeam, isPending: isLeaveTeamPending } = useLeaveTeam();
-  const { mutate: joinTeam, isPending: isJoinTeamPending } = useJoinTeam();
   const session = useSession();
 
   const joinOrLeaveTeamHandler = useCallback(
     async (team: Team) => {
       if (team.joined) {
-        await leaveTeam(team.id);
+        await leaveTeamMutation.mutate(team.id);
       } else {
-        await joinTeam(team.id);
+        await joinTeamMutation.mutate(team.id);
       }
     },
-    [joinTeam, leaveTeam]
+    [joinTeamMutation, leaveTeamMutation]
   );
 
   return (
@@ -28,9 +27,9 @@ export default function JoinOrLeaveTeamButton({ team }: { team: Team }) {
       variant={team.joined ? 'destructive' : 'primary'}
       className={cn('text-white gap-2 px-6 py-4 ')}
       onClick={async () => await joinOrLeaveTeamHandler(team)}
-      disabled={isJoinTeamPending || isLeaveTeamPending || session.status !== 'authenticated'}
+      disabled={joinTeamMutation.isPending || leaveTeamMutation.isPending || session.status !== 'authenticated'}
     >
-      {isJoinTeamPending || isLeaveTeamPending ? 'loading' : team.joined ? 'Leave' : 'Join'}
+      {joinTeamMutation.isPending || leaveTeamMutation.isPending ? 'loading' : team.joined ? 'Leave' : 'Join'}
     </Button>
   );
 }

@@ -1,5 +1,5 @@
 'use client';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogClose,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '../ui/dialog';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -17,7 +17,7 @@ import { z } from 'zod';
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useCreateTeam } from '@/hooks/use-teams';
+import { useTeams } from '@/hooks/use-teams';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 
@@ -32,7 +32,7 @@ export type CreateTeam = z.infer<typeof formSchema>;
 
 const CreateTeamDialog = () => {
   const session = useSession();
-  const { data, mutate } = useCreateTeam();
+  const { createTeamMutation } = useTeams();
 
   const form = useForm<CreateTeam>({
     resolver: zodResolver(formSchema),
@@ -43,7 +43,7 @@ const CreateTeamDialog = () => {
   });
 
   async function onSubmit(values: CreateTeam) {
-    await mutate(values);
+    await createTeamMutation.mutate(values);
   }
 
   return (

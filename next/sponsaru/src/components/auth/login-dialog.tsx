@@ -1,7 +1,7 @@
 'use client';
 
-import { TeamsIcon, WalletIcon } from '@/assets/icons';
-import { Button } from './ui/button';
+import { WalletIcon } from '@/assets/icons';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogClose,
@@ -10,12 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from '../ui/dialog';
 
 import { BuddyConnectWalletButton } from './wallet-connect-button';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { use, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { truncateString } from '@/utils/truncate';
 import { cn } from '@/lib/utils';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';

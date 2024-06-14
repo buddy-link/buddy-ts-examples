@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -14,12 +14,11 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { WalletIcon } from '@/assets/icons';
-import { MobileMenu, MobileMenuClose, MobileMenuContent, MobileMenuTrigger } from './ui/mobile-menu';
-import { DialogTrigger } from './ui/dialog';
+import { MobileMenu, MobileMenuClose, MobileMenuContent, MobileMenuTrigger } from '../ui/mobile-menu';
+import { DialogTrigger } from '../ui/dialog';
 import { SignMessageButton } from './sign-message-button';
-import { CreateUserWalletIdentity } from '@/lib/auth';
 import useAuthReq from '@/hooks/use-auth-request';
 import useUser from '@/hooks/use-user';
 

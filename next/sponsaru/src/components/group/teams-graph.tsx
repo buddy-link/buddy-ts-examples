@@ -1,16 +1,8 @@
-import { NodeImageProgram } from '@sigma/node-image';
-import Graph from 'graphology';
-
 import { useEffect, Attributes } from 'react';
+import Graph from 'graphology';
 import Sigma from 'sigma';
-import { NodeData, Position } from './types';
-import { MouseCoords } from 'sigma/types';
-
-type TeamGraphProps = {
-  nodes: NodeData[];
-  onNodeClick: (graph: Graph<Attributes, Attributes, Attributes>, node: string, event: MouseCoords) => void;
-  isLoading: boolean;
-};
+import { NodeImageProgram } from '@sigma/node-image';
+import { Position, TeamGraphProps } from '@/types/types';
 
 const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
   useEffect(() => {
@@ -28,8 +20,6 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
       let prevSize = nodes[0].members;
 
       nodes.forEach((node, index) => {
-        console.log(node);
-
         let position;
         if (index === 0) {
           position = prevPosition;
@@ -73,7 +63,7 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
         renderer.kill();
       };
     }
-  }, [nodes]);
+  }, [nodes, isLoading]);
 
   return <div id="sigma-container" className="bg-white rounded-xl" style={{ width: '100%', height: '80vh' }} />;
 };
@@ -81,7 +71,7 @@ const TeamsGraph = ({ nodes, onNodeClick, isLoading }: TeamGraphProps) => {
 export default TeamsGraph;
 
 const getNextPosition = (prevPosition: Position, prevSize: number, currSize: number): Position => {
-  const distanceMultiplier = 10; // Aumentar significativamente o multiplicador de distância
+  const distanceMultiplier = 10;
   const distance = ((prevSize + currSize) * distanceMultiplier) / 40;
   const angle = Math.random() * 2 * Math.PI;
   const x = prevPosition.x + distance * Math.cos(angle);
