@@ -10,7 +10,7 @@ import { TeamPopover } from './group/team-popover';
 import { Tabs, TabsContent } from './ui/tabs';
 import TeamsGraph from './group/teams-graph';
 import { SoloPopover } from './solo/solo-popover';
-import SoloGraph2 from './solo/solo-graph2';
+import SoloGraph from './solo/solo-graph';
 
 export const DEFAULT_ARGS = {
   order: 40,
@@ -63,7 +63,7 @@ const GraphContainer = () => {
             <TeamsGraph onNodeClick={handleTeamNodeClick} nodes={teams} isLoading={isTeamsDataLoading} />
           </TabsContent>
           <TabsContent value="solo" className="h-full">
-            <SoloGraph2 args={DEFAULT_ARGS} onNodeClick={handleSoloNodeClick} />
+            <SoloGraph args={DEFAULT_ARGS} onNodeClick={handleSoloNodeClick} />
           </TabsContent>
           <div className="absolute top-5 right-5">
             <Leaderboard teamsData={teams} isLoading={isTeamsDataLoading} />

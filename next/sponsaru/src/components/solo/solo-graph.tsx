@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Graph from 'graphology';
 import circlepack from 'graphology-layout/circlepack';
 import seedrandom from 'seedrandom';
@@ -7,6 +7,7 @@ import { EdgeLineProgram, EdgeRectangleProgram } from 'sigma/rendering';
 import { NodeImageProgram } from '@sigma/node-image';
 import { Attributes } from 'graphology-types';
 import { MouseCoords } from 'sigma/types';
+import { usePoints } from '@/hooks/use-points';
 
 interface SoloGraph2Props {
   args: {
@@ -19,25 +20,18 @@ interface SoloGraph2Props {
 }
 
 const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
+  const { topUsersQuery } = usePoints();
+  const data = useMemo(() => topUsersQuery.data || [], [topUsersQuery.data]);
+
   useEffect(() => {
     const rng = seedrandom('sigma');
     const state = {
       ...args,
     };
 
-    const data = [
-      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 9430 },
-      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1930 },
-      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1730 },
-      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 1230 },
-      { name: 'point_AIDAYEOGDEAXQDTAWY4DO', total: 953 },
-      { name: 'point_us-east-1:8238c320-2f78-ca67-bc74-017d3d2e85fc', total: 530 },
-      { name: 'point_garbage', total: 500 },
-    ];
-
     const graph = new Graph();
 
-    data.forEach((item, index) => {
+    data.forEach((item: { total: number; name: string }, index: number) => {
       const nodeKey = `node_${index}`;
       graph.addNode(nodeKey, {
         size: item.total / 100,
@@ -85,7 +79,7 @@ const SoloGraph2: React.FC<SoloGraph2Props> = ({ args, onNodeClick }) => {
     return () => {
       renderer.kill();
     };
-  }, [args, onNodeClick]);
+  }, [args, onNodeClick, data]);
 
   return (
     <div>
